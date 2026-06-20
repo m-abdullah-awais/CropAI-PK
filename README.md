@@ -1,10 +1,10 @@
-# CropAI PK — Crop Recommendation, Yield & Rotation
+# CropAI PK - Crop Recommendation, Yield & Rotation
 
 A full-stack web application for Pakistani agriculture with three capabilities:
 
-1. **Crop Recommendation** — soil (N, P, K, pH) + live weather → best crops, ranked.
-2. **Yield Prediction** — crop + year + climate → expected yield (t/ha) + history chart.
-3. **Rotation Planning** — a crop → what to plant next, what to avoid, and why.
+1. **Crop Recommendation** - soil (N, P, K, pH) + live weather → best crops, ranked.
+2. **Yield Prediction** - crop + year + climate → expected yield (t/ha) + history chart.
+3. **Rotation Planning** - a crop → what to plant next, what to avoid, and why.
 
 ## Architecture
 
@@ -23,7 +23,7 @@ chained in the UI: recommendation → rotation / yield.
 ## Prerequisites
 
 - **Node 18+ and pnpm** (frontend).
-- **Python 3.11+** — a real interpreter, not the Microsoft Store stub. The
+- **Python 3.11+** - a real interpreter, not the Microsoft Store stub. The
   project was built with Python 3.14 via the `py` launcher.
 
 ## Run the backend (terminal 1)
@@ -57,12 +57,12 @@ Open http://localhost:3007
 - The **recommendation** model trains on reference-grounded *synthetic* data
   (real measured ranges for 7 crops, published Pakistani agronomic ranges for 8).
   High accuracy is expected and is **not** proof of field validity.
-- **Yield** uses real FAO data for **7 crops only** — no cotton or sugarcane.
+- **Yield** uses real FAO data for **7 crops only** - no cotton or sugarcane.
   Measured through **2024** for wheat/rice/maize/potato/soybean (via Our World in
   Data) and 2013 for sorghum/sweet potato; 2025–2026 are trend projections, flagged
   as such. Unsupported crops return a graceful "not available" state.
 - Weather **rainfall** from Open-Meteo is recent precipitation, not the seasonal
-  total the model expects — it is auto-filled but flagged for the user to verify.
+  total the model expects - it is auto-filled but flagged for the user to verify.
 
 See `data/README.md` for full dataset methodology and `backend/README.md` for the
 ML/API details.

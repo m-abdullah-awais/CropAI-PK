@@ -55,7 +55,7 @@ export function RotationCards({ data }: { data: RotationResponse }) {
               ))}
               {data.recommended_next.length === 0 && (
                 <p className="text-sm text-muted-foreground">
-                  No specific successors — see notes.
+                  No specific successors - see notes.
                 </p>
               )}
             </div>

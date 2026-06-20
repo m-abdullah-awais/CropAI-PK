@@ -15,16 +15,16 @@ type FieldName =
   | "N" | "P" | "K" | "ph" | "temperature" | "humidity" | "rainfall";
 
 const SOIL_FIELDS: { name: FieldName; label: string; hint: string }[] = [
-  { name: "N", label: "Nitrogen (N)", hint: "0–140" },
-  { name: "P", label: "Phosphorus (P)", hint: "5–145" },
-  { name: "K", label: "Potassium (K)", hint: "5–205" },
-  { name: "ph", label: "Soil pH", hint: "3.5–9.5" },
+  { name: "N", label: "Nitrogen (N)", hint: "0-140" },
+  { name: "P", label: "Phosphorus (P)", hint: "5-145" },
+  { name: "K", label: "Potassium (K)", hint: "5-205" },
+  { name: "ph", label: "Soil pH", hint: "3.5-9.5" },
 ];
 
 const CLIMATE_FIELDS: { name: FieldName; label: string; hint: string }[] = [
-  { name: "temperature", label: "Temperature (°C)", hint: "auto / 8–44" },
-  { name: "humidity", label: "Humidity (%)", hint: "auto / 14–100" },
-  { name: "rainfall", label: "Rainfall (mm)", hint: "auto — verify" },
+  { name: "temperature", label: "Temperature (°C)", hint: "auto / 8-44" },
+  { name: "humidity", label: "Humidity (%)", hint: "auto / 14-100" },
+  { name: "rainfall", label: "Rainfall (mm)", hint: "auto - verify" },
 ];
 
 const DEFAULTS: Record<FieldName, string> = {

@@ -81,7 +81,7 @@ function YieldInner() {
                 <Card>
                   <CardContent className="p-5">
                     <p className="mb-3 text-sm font-medium">
-                      Historical yield — {history.display}
+                      Historical yield - {history.display}
                     </p>
                     <YieldTrendChart
                       series={history.series}

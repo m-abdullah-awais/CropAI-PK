@@ -50,7 +50,7 @@ export async function GET(request: Request) {
       rainfall: {
         value: Number(cur.precipitation ?? 0),
         reliable: false,
-        note: "Recent precipitation (live) — not the seasonal total the model expects. Please adjust.",
+        note: "Recent precipitation (live) - not the seasonal total the model expects. Please adjust.",
       },
     };
     return Response.json(payload);

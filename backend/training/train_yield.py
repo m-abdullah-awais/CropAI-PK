@@ -101,7 +101,7 @@ def train() -> dict:
 
     metrics = {
         "model": "RandomForestRegressor(n_estimators=400) + OneHot(crop)",
-        "split": "GroupShuffleSplit by (crop, year) — leakage-safe",
+        "split": "GroupShuffleSplit by (crop, year) - leakage-safe",
         "n_train_rows": int(len(X_train)),
         "n_test_rows": int(len(X_test)),
         "rmse_hg_ha": round(rmse, 1),

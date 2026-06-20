@@ -11,7 +11,7 @@ const TOOLS = [
     href: "/recommend",
     title: "Crop Recommendation",
     description:
-      "Enter soil nutrients and a location — get the best crops for your field, ranked by confidence, with live weather auto-filled.",
+      "Enter soil nutrients and a location - get the best crops for your field, ranked by confidence, with live weather auto-filled.",
     icon: Sprout,
     cta: "Recommend a crop",
   },
@@ -27,7 +27,7 @@ const TOOLS = [
     href: "/rotation",
     title: "Rotation Planning",
     description:
-      "Plan next season — which crops to follow with and which to avoid, based on Pakistani cropping systems.",
+      "Plan next season - which crops to follow with and which to avoid, based on Pakistani cropping systems.",
     icon: RefreshCw,
     cta: "Plan rotation",
   },
@@ -45,7 +45,7 @@ export default function Home() {
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-balance text-lg text-muted-foreground">
           AI-powered crop recommendation, yield prediction, and rotation
-          planning — tuned for Pakistan&apos;s soils, crops, and climate.
+          planning - tuned for Pakistan&apos;s soils, crops, and climate.
         </p>
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link href="/recommend" className={cn(buttonVariants({ size: "lg" }))}>

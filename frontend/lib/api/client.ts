@@ -17,7 +17,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
       headers: { "content-type": "application/json", ...(init?.headers ?? {}) },
     });
   } catch {
-    throw new ApiError("Network error — could not reach the server.", 0);
+    throw new ApiError("Network error - could not reach the server.", 0);
   }
 
   const text = await res.text();

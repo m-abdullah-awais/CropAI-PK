@@ -1,11 +1,11 @@
-# Pakistan Crop AI — Backend
+# Pakistan Crop AI - Backend
 
 FastAPI + scikit-learn service for three capabilities:
 
-- **Recommendation** — RandomForest classifier on `pakistan_crop_recommendation.csv` (15 crops).
-- **Yield** — RandomForest regressor on `pakistan_crop_yield.csv` (7 crops). Trained with a
+- **Recommendation** - RandomForest classifier on `pakistan_crop_recommendation.csv` (15 crops).
+- **Yield** - RandomForest regressor on `pakistan_crop_yield.csv` (7 crops). Trained with a
   **group split by `(crop, year)`** to prevent target leakage from the repeated monthly rows.
-- **Rotation** — rules lookup on `pakistan_crop_rotation_rules.csv` (15 crops).
+- **Rotation** - rules lookup on `pakistan_crop_rotation_rules.csv` (15 crops).
 
 ## Setup (Windows PowerShell)
 

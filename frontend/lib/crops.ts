@@ -1,4 +1,4 @@
-// Canonical crop registry — mirrors backend app/crops.py.
+// Canonical crop registry - mirrors backend app/crops.py.
 // Drives cross-tool chaining and the 15-vs-7 yield mismatch handling.
 
 export interface CropDef {

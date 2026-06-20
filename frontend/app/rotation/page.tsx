@@ -51,7 +51,7 @@ function RotationInner() {
       <PageHeader
         icon={RefreshCw}
         title="Rotation Planning"
-        description="Pick a crop to see what to plant next, what to avoid, and why — based on Pakistani cropping systems."
+        description="Pick a crop to see what to plant next, what to avoid, and why - based on Pakistani cropping systems."
       />
 
       <Card className="mb-6">
