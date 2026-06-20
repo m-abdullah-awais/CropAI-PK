@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LineChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +8,7 @@ import { Label } from "@/components/ui/label";
 import { CropSelect } from "@/components/common/crop-select";
 import { WeatherAutofill } from "@/components/common/weather-autofill";
 import { YIELD_AVAILABLE_CROPS } from "@/lib/crops";
-import {
-  yieldDefaults,
-  yieldSchema,
-  type YieldForm as FormValues,
-} from "@/lib/schemas/yield";
+import { yieldSchema, type YieldForm as FormValues } from "@/lib/schemas/yield";
 
 export function YieldForm({
   initialCrop,
@@ -26,31 +20,43 @@ export function YieldForm({
   loading: boolean;
 }) {
   const supported = YIELD_AVAILABLE_CROPS.some((c) => c.slug === initialCrop);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(yieldSchema),
-    defaultValues: {
-      ...yieldDefaults,
-      crop: supported ? initialCrop! : yieldDefaults.crop,
-    },
-  });
+  const [crop, setCrop] = React.useState(
+    supported ? initialCrop! : YIELD_AVAILABLE_CROPS[0].slug,
+  );
+  const [year, setYear] = React.useState("2026");
+  const [avgTemp, setAvgTemp] = React.useState("25");
+  const [rainfall, setRainfall] = React.useState("500");
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  const crop = watch("crop");
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = yieldSchema.safeParse({
+      crop,
+      year: year === "" ? NaN : Number(year),
+      avg_temp: avgTemp === "" ? NaN : Number(avgTemp),
+      rainfall_mm_per_year: rainfall === "" ? NaN : Number(rainfall),
+    });
+    if (!parsed.success) {
+      const next: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        next[String(issue.path[0])] = issue.message;
+      }
+      setErrors(next);
+      return;
+    }
+    setErrors({});
+    onSubmit(parsed.data);
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-1.5">
         <Label htmlFor="crop">Crop</Label>
         <CropSelect
           id="crop"
           crops={YIELD_AVAILABLE_CROPS}
           value={crop}
-          onChange={(v) => setValue("crop", v)}
+          onChange={setCrop}
         />
         <p className="text-[11px] text-muted-foreground">
           Yield data is available for 7 major Pakistani crops.
@@ -58,24 +64,32 @@ export function YieldForm({
       </div>
 
       <WeatherAutofill
-        onResult={(w) =>
-          setValue("avg_temp", Math.round(w.temperature * 10) / 10)
-        }
+        onResult={(w) => setAvgTemp(String(Math.round(w.temperature * 10) / 10))}
       />
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label>Year</Label>
-          <Input type="number" step="1" {...register("year", { valueAsNumber: true })} />
+          <Input
+            type="number"
+            step="1"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+          />
           {errors.year && (
-            <p className="text-xs text-destructive">{errors.year.message}</p>
+            <p className="text-xs text-destructive">{errors.year}</p>
           )}
         </div>
         <div className="space-y-1.5">
           <Label>Avg temperature (°C)</Label>
-          <Input type="number" step="any" {...register("avg_temp", { valueAsNumber: true })} />
+          <Input
+            type="number"
+            step="any"
+            value={avgTemp}
+            onChange={(e) => setAvgTemp(e.target.value)}
+          />
           {errors.avg_temp && (
-            <p className="text-xs text-destructive">{errors.avg_temp.message}</p>
+            <p className="text-xs text-destructive">{errors.avg_temp}</p>
           )}
         </div>
         <div className="col-span-2 space-y-1.5">
@@ -83,11 +97,12 @@ export function YieldForm({
           <Input
             type="number"
             step="any"
-            {...register("rainfall_mm_per_year", { valueAsNumber: true })}
+            value={rainfall}
+            onChange={(e) => setRainfall(e.target.value)}
           />
           {errors.rainfall_mm_per_year && (
             <p className="text-xs text-destructive">
-              {errors.rainfall_mm_per_year.message}
+              {errors.rainfall_mm_per_year}
             </p>
           )}
         </div>
