@@ -1,0 +1,54 @@
+# ── Single .gitignore for the whole project (frontend + backend) ──
+# Patterns are unanchored so they match in any subdirectory.
+
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Next.js / frontend build output
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# Python / backend
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Trained model artifacts (regenerate with: pnpm train)
+models/*.joblib
+models/*.json
+
+# Environment files (keep the committed examples)
+.env
+.env.*
+!.env.example
+
+# Logs
+*-debug.log*
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.pem
+
+temp/
+.claude
+.agents
+CLAUDE.md
+skills-lock.json

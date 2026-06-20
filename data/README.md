@@ -48,7 +48,25 @@ crop-outcome records before production use.
 
 ## 2. pakistan_crop_yield.csv — yield prediction (regression)
 
-1,449 rows, Pakistan only, years 1990–2013. Target `hg/ha_yield`.
+2,268 rows, Pakistan only, years **1990–2026**. Target `hg/ha_yield`.
+
+> **Real vs projected (yield target):**
+> - **1990–2013** — original real FAO data.
+> - **2014–2024** — **real measured FAO yields** for wheat, rice, maize, potato,
+>   and soybean, sourced from Our World in Data (FAO "Production: Crops and livestock
+>   products"), stored in `pakistan_recent_yields.csv` and merged in.
+> - **2025–2026** (all crops) and **2014–2026 for sorghum & sweet potato** (no OWID
+>   series) — **trend projections**.
+>
+> Non-yield features on the added rows (rainfall, pesticides, avg_temp) are estimates
+> (historical mean / linear trend / base-year pattern + slight warming); only the
+> yield target uses measured values where available. The API flags a prediction as a
+> projection only when the requested year exceeds that crop's last measured year
+> (2024 for the five OWID crops, 2013 for sorghum/sweet potato).
+>
+> Rebuild with `scripts/extend_yield_dataset.py` (idempotent). To refresh the real
+> recent data, re-download from OWID into `pakistan_recent_yields.csv`.
+
 Columns: `Area, Item, Year, hg/ha_yield, average_rain_fall_mm_per_year, pesticides_tonnes, avg_temp`.
 
 - Filtered from the FAO/World-Bank dataset (`crop_yield.csv`). Real measured values, 0 nulls.
@@ -75,6 +93,13 @@ in the recommendation crop list.
 - `pakistan_crop_requirements.csv` — the documented per-crop feature ranges
   (mean/std/min/max) with a `source` column (measured | literature). Auditable basis
   for the generated recommendation dataset.
+
+## Recent real yields
+
+- `pakistan_recent_yields.csv` — measured Pakistan yields (t/ha) for wheat, rice,
+  maize, potato, soybean, **2014–2024**, from Our World in Data (FAO source):
+  e.g. https://ourworldindata.org/grapher/wheat-yields (per-crop `*-yields` graphers).
+  Merged into the yield dataset by `scripts/extend_yield_dataset.py`.
 
 ## Provenance (source files, not stored)
 
