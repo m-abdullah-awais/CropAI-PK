@@ -1,44 +1,46 @@
-"""Canonical crop registry and normalization across the three datasets.
+"""Canonical crop registry and availability across the three real datasets.
 
-- Recommendation covers 15 crops (canonical slugs).
-- Yield covers 7 crops, named differently in the FAO CSV ("Rice, paddy" etc.)
-  and including two crops (soybean, sweet_potato) that recommendation/rotation lack.
-- Rotation covers the same 15 as recommendation.
-
-Everything keys off the canonical slug.
+- Recommendation / rotation: 22 crops from the real crop-recommendation dataset.
+- Yield: 9 crops with real FAO/OWID yield series (canonical slugs).
+The three sets do not fully overlap; everything keys off the canonical slug.
 """
 
 from __future__ import annotations
 
-# 15 recommendation / rotation crops (canonical slugs == labels in the CSVs).
+# 22 recommendation / rotation crops (labels in the real recommendation CSV).
 RECO_CROPS: list[str] = [
-    "wheat", "rice", "maize", "cotton", "sugarcane", "chickpea", "lentil",
-    "mungbean", "blackgram", "mustard", "sunflower", "potato", "sorghum",
-    "millet", "barley",
+    "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
+    "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
+    "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
+    "apple", "orange", "coconut", "coffee",
 ]
 
-# FAO yield CSV `Item` value -> canonical slug.
-YIELD_ITEM_TO_CANON: dict[str, str] = {
-    "Maize": "maize",
-    "Wheat": "wheat",
-    "Rice, paddy": "rice",
-    "Potatoes": "potato",
-    "Sorghum": "sorghum",
-    "Soybeans": "soybean",
-    "Sweet potatoes": "sweet_potato",
-    "Sugar cane": "sugarcane",
-    "Barley": "barley",
-}
-CANON_TO_YIELD_ITEM: dict[str, str] = {v: k for k, v in YIELD_ITEM_TO_CANON.items()}
+# 9 crops with real yield data (canonical slugs in pakistan_yield_real.csv).
+YIELD_CROPS: list[str] = [
+    "wheat", "rice", "maize", "potato", "soybean", "sorghum",
+    "sweet_potato", "sugarcane", "barley",
+]
 
-YIELD_AVAILABLE: set[str] = set(YIELD_ITEM_TO_CANON.values())
+YIELD_AVAILABLE: set[str] = set(YIELD_CROPS)
 ROTATION_AVAILABLE: set[str] = set(RECO_CROPS)
 
-# Full canonical universe (recommendation + yield-only extras).
-ALL_CROPS: list[str] = RECO_CROPS + ["soybean", "sweet_potato"]
+# Full canonical universe (recommendation crops + yield-only extras).
+ALL_CROPS: list[str] = RECO_CROPS + [c for c in YIELD_CROPS if c not in RECO_CROPS]
 
-# Display names (slugs are already readable; only the two-word ones need help).
-_DISPLAY_OVERRIDES = {"sweet_potato": "Sweet Potato", "blackgram": "Black Gram"}
+_DISPLAY_OVERRIDES = {
+    "sweet_potato": "Sweet Potato",
+    "blackgram": "Black Gram",
+    "kidneybeans": "Kidney Beans",
+    "mothbeans": "Moth Beans",
+    "pigeonpeas": "Pigeon Peas",
+}
+
+_ALIASES = {
+    "rice_paddy": "rice", "potatoes": "potato", "soybeans": "soybean",
+    "sweet_potatoes": "sweet_potato", "black_gram": "blackgram",
+    "sugar_cane": "sugarcane", "kidney_beans": "kidneybeans",
+    "moth_beans": "mothbeans", "pigeon_peas": "pigeonpeas",
+}
 
 
 def display_name(slug: str) -> str:
@@ -48,16 +50,10 @@ def display_name(slug: str) -> str:
 
 
 def normalize(crop: str) -> str:
-    """Best-effort normalization of arbitrary crop input to a canonical slug."""
     c = crop.strip().lower().replace(" ", "_")
     if c in ALL_CROPS:
         return c
-    # Accept the FAO display forms too.
-    if crop in YIELD_ITEM_TO_CANON:
-        return YIELD_ITEM_TO_CANON[crop]
-    aliases = {"rice_paddy": "rice", "potatoes": "potato", "soybeans": "soybean",
-               "sweet_potatoes": "sweet_potato", "black_gram": "blackgram"}
-    return aliases.get(c, c)
+    return _ALIASES.get(c, c)
 
 
 def yield_available(slug: str) -> bool:

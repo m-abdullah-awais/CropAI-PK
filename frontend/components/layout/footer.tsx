@@ -10,12 +10,12 @@ export function Footer() {
         </div>
         <p className="mt-2 max-w-2xl">
           Crop recommendation, yield prediction, and rotation planning for
-          Pakistan. Recommendations use reference-grounded synthetic data and
-          live weather - validate against local soil tests before field use.
+          Pakistan. Built on real datasets - validate against local soil tests
+          before field use.
         </p>
         <p className="mt-3 text-xs">
-          Yield data: FAO (real through 2024, projected to 2026). Weather:
-          Open-Meteo. For research and educational use.
+          Data: real crop-recommendation dataset (22 crops) and FAO/OWID yields
+          (1990-2024). Weather: Open-Meteo. For research and educational use.
         </p>
       </div>
     </footer>

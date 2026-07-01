@@ -75,8 +75,8 @@ def train() -> dict:
         },
         "confusion": {"labels": list(classes), "matrix": cm.tolist()},
         "note": (
-            "Reference-grounded synthetic data: high accuracy is expected and does "
-            "NOT prove real-world field validity."
+            "Trained on the real crop-recommendation dataset (22 crops). The classes "
+            "are well separated, so accuracy is high."
         ),
     }
     return metrics

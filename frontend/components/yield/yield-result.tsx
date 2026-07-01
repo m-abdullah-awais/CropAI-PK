@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { AlertTriangle, Info, Sprout, TrendingUp } from "lucide-react";
+import { AlertTriangle, Sprout, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/units";
+import { getCrop } from "@/lib/crops";
 import type { YieldResponse } from "@/lib/types";
 
 export function YieldResult({ data }: { data: YieldResponse }) {
@@ -35,12 +36,14 @@ export function YieldResult({ data }: { data: YieldResponse }) {
     );
   }
 
+  const canRotate = getCrop(data.crop)?.rotationAvailable;
+
   return (
     <Card className="animate-fade-in-up overflow-hidden">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <TrendingUp className="size-4 text-primary" />
-          Predicted yield for {data.display} ({data.year})
+          Yield for {data.display} ({data.year})
         </div>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-4xl font-bold tracking-tight">
@@ -52,31 +55,24 @@ export function YieldResult({ data }: { data: YieldResponse }) {
           ≈ {formatNumber(data.yield_kg_per_ha ?? 0)} kg/ha
         </p>
 
-        <div className="mt-4 space-y-2">
-          {data.extrapolation_warning && (
-            <p className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-foreground">
-              <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-              {data.extrapolation_warning}
-            </p>
-          )}
-          {data.pesticides_defaulted && (
-            <p className="flex items-start gap-2 rounded-lg bg-secondary/60 p-2.5 text-xs text-muted-foreground">
-              <Info className="mt-0.5 size-3.5 shrink-0" />
-              Pesticide input defaulted to the national average for {data.year} (
-              {formatNumber(data.pesticides_tonnes ?? 0)} tonnes).
-            </p>
-          )}
-        </div>
+        {data.extrapolation_warning && (
+          <p className="mt-4 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-foreground">
+            <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+            {data.extrapolation_warning}
+          </p>
+        )}
 
-        <Link
-          href={`/rotation?crop=${data.crop}`}
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "mt-4",
-          )}
-        >
-          Plan rotation for {data.display}
-        </Link>
+        {canRotate && (
+          <Link
+            href={`/rotation?crop=${data.crop}`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "mt-4",
+            )}
+          >
+            Plan rotation for {data.display}
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,5 +1,5 @@
 // Canonical crop registry - mirrors backend app/crops.py.
-// Drives cross-tool chaining and the 15-vs-7 yield mismatch handling.
+// Recommendation/rotation = 22 real crops; yield = 9 real crops.
 
 export interface CropDef {
   slug: string;
@@ -8,22 +8,26 @@ export interface CropDef {
   rotationAvailable: boolean;
 }
 
-// 15 recommendation / rotation crops.
+// 22 recommendation / rotation crops (real dataset labels).
 const RECO_CROPS = [
-  "wheat", "rice", "maize", "cotton", "sugarcane", "chickpea", "lentil",
-  "mungbean", "blackgram", "mustard", "sunflower", "potato", "sorghum",
-  "millet", "barley",
+  "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
+  "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
+  "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
+  "apple", "orange", "coconut", "coffee",
 ];
 
-// 9 crops with FAO/OWID yield data (canonical slugs).
+// 9 crops with real FAO/OWID yield data (canonical slugs).
 const YIELD_CROPS = new Set([
-  "maize", "wheat", "rice", "potato", "sorghum", "soybean", "sweet_potato",
-  "sugarcane", "barley",
+  "wheat", "rice", "maize", "potato", "soybean", "sorghum",
+  "sweet_potato", "sugarcane", "barley",
 ]);
 
 const DISPLAY_OVERRIDES: Record<string, string> = {
   sweet_potato: "Sweet Potato",
   blackgram: "Black Gram",
+  kidneybeans: "Kidney Beans",
+  mothbeans: "Moth Beans",
+  pigeonpeas: "Pigeon Peas",
 };
 
 export function displayName(slug: string): string {
@@ -43,11 +47,11 @@ function makeCrop(slug: string): CropDef {
   };
 }
 
-// All crops the UI may surface (15 + the two yield-only extras).
+// All crops the UI may surface (22 recommendation + yield-only extras).
+const YIELD_ONLY = [...YIELD_CROPS].filter((c) => !RECO_CROPS.includes(c));
 export const ALL_CROPS: CropDef[] = [
   ...RECO_CROPS.map(makeCrop),
-  makeCrop("soybean"),
-  makeCrop("sweet_potato"),
+  ...YIELD_ONLY.map(makeCrop),
 ];
 
 export const RECOMMENDATION_CROPS: CropDef[] = RECO_CROPS.map(makeCrop);

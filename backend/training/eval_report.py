@@ -19,7 +19,7 @@ def main() -> None:
         f"top3={reco['top3_accuracy']}"
     )
 
-    print("Training yield regressor (group split)...")
+    print("Training yield regressor (real crop+year data)...")
     yld = train_yield()
     merge_metrics("yield", yld)
     print(f"  r2={yld['r2']} rmse={yld['rmse_hg_ha']} hg/ha")

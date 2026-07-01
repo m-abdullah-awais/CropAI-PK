@@ -23,9 +23,6 @@ export interface RecommendInput {
 export interface YieldInput {
   crop: string;
   year: number;
-  rainfall_mm_per_year: number;
-  avg_temp: number;
-  pesticides_tonnes?: number | null;
 }
 
 export function getHealth(): Promise<HealthResponse> {

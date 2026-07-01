@@ -30,8 +30,6 @@ export interface YieldResponse {
   yield_hg_per_ha?: number | null;
   yield_kg_per_ha?: number | null;
   yield_t_per_ha?: number | null;
-  pesticides_tonnes?: number | null;
-  pesticides_defaulted?: boolean | null;
   extrapolation_warning?: string | null;
   model_version?: string | null;
   message?: string | null;

@@ -1,5 +1,4 @@
-"""Feature definitions, column order, and unit conversions shared by training
-and serving so the two never drift."""
+"""Feature definitions and unit conversions shared by training and serving."""
 
 from __future__ import annotations
 
@@ -8,19 +7,12 @@ RECO_FEATURES: list[str] = [
     "N", "P", "K", "temperature", "humidity", "ph", "rainfall",
 ]
 
-# Yield model inputs. `crop` is one-hot encoded inside the pipeline; the rest
-# are numeric and passed through.
-YIELD_NUMERIC_FEATURES: list[str] = [
-    "Year", "average_rain_fall_mm_per_year", "pesticides_tonnes", "avg_temp",
-]
-YIELD_CROP_FEATURE: str = "crop"  # canonical slug column added before fitting
+# Yield model inputs: crop (one-hot) + year. Both are real, no estimated features.
+YIELD_CROP_FEATURE: str = "crop"
+YIELD_NUMERIC_FEATURES: list[str] = ["year"]
 
-YIELD_YEAR_MIN = 1990
-YIELD_YEAR_MAX = 2026
-
-# Last year of real measured FAO yield per crop. wheat/rice/maize/potato/soybean
-# have measured data through 2024 (via Our World in Data); sorghum & sweet_potato
-# only through the original 2013 cut-off. Years beyond these are trend projections.
+# Last year of real measured yield per crop. Most have data through 2024;
+# sorghum & sweet_potato only through the FAO 2013 cut-off (no OWID series).
 YIELD_REAL_THROUGH_DEFAULT = 2024
 YIELD_REAL_THROUGH_BY_CROP: dict[str, int] = {
     "sorghum": 2013,

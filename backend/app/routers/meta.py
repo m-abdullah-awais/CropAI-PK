@@ -9,7 +9,8 @@ from app.crops import (
     rotation_available,
     yield_available,
 )
-from app.ml.data_loaders import load_requirements
+from app.ml.data_loaders import load_recommendation
+from app.ml.features import RECO_FEATURES
 from app.registry import registry
 from app.schemas.common import CropInfo, FeatureRange
 
@@ -37,22 +38,17 @@ def get_crops() -> list[CropInfo]:
 
 @router.get("/feature-ranges", response_model=list[FeatureRange])
 def get_feature_ranges() -> list[FeatureRange]:
-    df = load_requirements()
-    out: list[FeatureRange] = []
-    # Map requirement columns (e.g. N_min/N_max) to recommendation features.
-    pairs = {
-        "N": ("N_min", "N_max"), "P": ("P_min", "P_max"), "K": ("K_min", "K_max"),
-        "temperature": ("temp_min", "temp_max"), "humidity": ("hum_min", "hum_max"),
-        "ph": ("ph_min", "ph_max"), "rainfall": ("rain_min", "rain_max"),
-    }
-    for feat, (lo, hi) in pairs.items():
-        out.append(FeatureRange(
+    # Observed min/max per feature from the real recommendation dataset.
+    df = load_recommendation()
+    return [
+        FeatureRange(
             feature=feat,
-            min=float(df[lo].min()),
-            max=float(df[hi].max()),
+            min=round(float(df[feat].min()), 2),
+            max=round(float(df[feat].max()), 2),
             unit=_UNITS.get(feat, ""),
-        ))
-    return out
+        )
+        for feat in RECO_FEATURES
+    ]
 
 
 @router.get("/metrics")

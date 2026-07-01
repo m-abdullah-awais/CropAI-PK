@@ -9,7 +9,7 @@ from typing import Any
 import joblib
 
 from app.config import settings
-from app.crops import YIELD_ITEM_TO_CANON
+from app.crops import YIELD_CROPS
 from app.ml.data_loaders import load_rotation, load_yield
 
 
@@ -64,16 +64,14 @@ class ModelRegistry:
             }
 
     def _load_yield_history(self) -> None:
-        df = load_yield()
-        # One value per (crop, year); the target is constant within a year.
-        deduped = df.drop_duplicates(subset=["crop", "Year"])
-        for crop in sorted(set(YIELD_ITEM_TO_CANON.values())):
-            rows = deduped[deduped["crop"] == crop].sort_values("Year")
+        df = load_yield()  # crop, year, yield_t_ha (one row per crop-year)
+        for crop in YIELD_CROPS:
+            rows = df[df["crop"] == crop].sort_values("year")
             self.yield_history[crop] = [
                 {
-                    "year": int(r["Year"]),
-                    "yield_hg_per_ha": float(r["hg/ha_yield"]),
-                    "yield_t_per_ha": round(float(r["hg/ha_yield"]) / 10000.0, 3),
+                    "year": int(r["year"]),
+                    "yield_hg_per_ha": round(float(r["yield_t_ha"]) * 10000.0, 1),
+                    "yield_t_per_ha": round(float(r["yield_t_ha"]), 3),
                 }
                 for _, r in rows.iterrows()
             ]

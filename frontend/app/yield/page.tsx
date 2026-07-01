@@ -95,7 +95,7 @@ function YieldInner() {
             <ResultEmpty
               icon={LineChart}
               title="Your yield estimate will appear here"
-              description="Pick a crop, year, and climate, then click “Predict yield”."
+              description="Pick a crop and year, then click “Predict yield”."
             />
           )}
         </div>
