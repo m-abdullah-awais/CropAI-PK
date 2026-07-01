@@ -28,9 +28,11 @@ Columns: `N, P, K, temperature(C), humidity(%), ph, rainfall(mm), label`.
 ## 2. pakistan_yield_real.csv - yield prediction (regression)
 
 **Real** measured yields, columns `crop, year, yield_t_ha`. One row per crop-year.
+731 rows.
 
-- 9 crops: wheat, rice, maize, potato, soybean, sugarcane, barley (1990-2024);
-  sorghum, sweet_potato (1990-2013, no OWID series after).
+- 13 crops: wheat, rice, maize, potato, soybean, sugarcane, barley, rapeseed
+  (mustard), beans, peas (all **1961-2024**), tomato (1980-2024); sorghum,
+  sweet_potato (1990-2013, no OWID series after).
 - The model maps `(crop, year) -> yield` - no estimated climate features, no
   projected rows. A request for a year past a crop's last real year returns that
   crop's latest real value with a note.

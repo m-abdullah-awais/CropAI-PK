@@ -591,22 +591,26 @@
   "yield": {
     "model": "RandomForestRegressor(n_estimators=400) + OneHot(crop), inputs=(crop, year)",
     "data": "real yields only (FAO/OWID), 1990-2024",
-    "n_train": 232,
-    "n_test": 59,
-    "rmse_hg_ha": 10557.3,
-    "mae_hg_ha": 5316.9,
-    "r2": 0.9957,
-    "year_min": 1990,
+    "n_train": 584,
+    "n_test": 147,
+    "rmse_hg_ha": 7288.0,
+    "mae_hg_ha": 3125.4,
+    "r2": 0.9967,
+    "year_min": 1961,
     "year_max": 2024,
     "crops": [
       "barley",
+      "beans",
       "maize",
+      "peas",
       "potato",
+      "rapeseed",
       "rice",
       "sorghum",
       "soybean",
       "sugarcane",
       "sweet_potato",
+      "tomato",
       "wheat"
     ]
   }

@@ -16,10 +16,10 @@ const RECO_CROPS = [
   "apple", "orange", "coconut", "coffee",
 ];
 
-// 9 crops with real FAO/OWID yield data (canonical slugs).
+// 13 crops with real FAO/OWID yield data (canonical slugs).
 const YIELD_CROPS = new Set([
   "wheat", "rice", "maize", "potato", "soybean", "sorghum",
-  "sweet_potato", "sugarcane", "barley",
+  "sweet_potato", "sugarcane", "barley", "rapeseed", "beans", "peas", "tomato",
 ]);
 
 const DISPLAY_OVERRIDES: Record<string, string> = {

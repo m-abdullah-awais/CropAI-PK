@@ -54,7 +54,7 @@ export function YieldForm({
           onChange={setCrop}
         />
         <p className="text-[11px] text-muted-foreground">
-          Real FAO/OWID yield data for 9 Pakistani crops.
+          Real FAO/OWID yield data for 13 Pakistani crops.
         </p>
       </div>
 
@@ -69,7 +69,7 @@ export function YieldForm({
         />
         {errors.year && <p className="text-xs text-destructive">{errors.year}</p>}
         <p className="text-[11px] text-muted-foreground">
-          Real data runs 1990-2024; later years show the latest available.
+          Real data runs 1961-2024; later years show the latest available.
         </p>
       </div>
 

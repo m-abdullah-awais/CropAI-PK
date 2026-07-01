@@ -21,7 +21,7 @@ def test_health(client):
     body = client.get("/health").json()
     assert body["models_loaded"] is True
     assert body["n_crops_recommendation"] == 22
-    assert body["n_crops_yield"] == 9
+    assert body["n_crops_yield"] == 13
 
 
 def test_recommend_returns_ranked_crops(client):

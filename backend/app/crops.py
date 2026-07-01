@@ -15,10 +15,10 @@ RECO_CROPS: list[str] = [
     "apple", "orange", "coconut", "coffee",
 ]
 
-# 9 crops with real yield data (canonical slugs in pakistan_yield_real.csv).
+# 13 crops with real yield data (canonical slugs in pakistan_yield_real.csv).
 YIELD_CROPS: list[str] = [
     "wheat", "rice", "maize", "potato", "soybean", "sorghum",
-    "sweet_potato", "sugarcane", "barley",
+    "sweet_potato", "sugarcane", "barley", "rapeseed", "beans", "peas", "tomato",
 ]
 
 YIELD_AVAILABLE: set[str] = set(YIELD_CROPS)

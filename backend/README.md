@@ -1,11 +1,12 @@
 # Pakistan Crop AI - Backend
 
-FastAPI + scikit-learn service for three capabilities:
+FastAPI + scikit-learn service for three capabilities, all on REAL data:
 
-- **Recommendation** - RandomForest classifier on `pakistan_crop_recommendation.csv` (15 crops).
-- **Yield** - RandomForest regressor on `pakistan_crop_yield.csv` (7 crops). Trained with a
-  **group split by `(crop, year)`** to prevent target leakage from the repeated monthly rows.
-- **Rotation** - rules lookup on `pakistan_crop_rotation_rules.csv` (15 crops).
+- **Recommendation** - RandomForest classifier on `pakistan_crop_recommendation.csv`
+  (real 22-crop dataset; soil NPK + climate -> crop).
+- **Yield** - RandomForest regressor on `pakistan_yield_real.csv` (real FAO/OWID yields,
+  13 crops, 1961-2024). Inputs `(crop, year)`; no estimated features, no projections.
+- **Rotation** - rules lookup on `pakistan_crop_rotation_rules.csv` (22 crops, curated agronomy).
 
 ## Setup (Windows PowerShell)
 
@@ -51,7 +52,8 @@ py -3.14 -m venv .venv
 
 ## Notes / honesty
 
-- The recommendation dataset is reference-grounded **synthetic** data, so accuracy is
-  high by construction and does not prove field validity.
-- Yield covers only 7 crops (no cotton/sugarcane); unsupported crops return
-  `available: false` (HTTP 200), never an error.
+- **Real data only** - no synthetic or projected rows. Recommendation accuracy is high
+  because the real dataset's classes are well separated; validate against local soil tests.
+- Recommendation (22 crops) and yield (13 crops) barely overlap - that is the true shape
+  of the available real data. Cotton is recommendation-only (no public yield series).
+- A crop without yield data returns `available: false` (HTTP 200), never an error.

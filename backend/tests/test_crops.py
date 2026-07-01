@@ -14,7 +14,7 @@ from app.ml.data_loaders import load_rotation
 
 def test_crop_set_sizes():
     assert len(RECO_CROPS) == 22
-    assert len(YIELD_AVAILABLE) == 9
+    assert len(YIELD_AVAILABLE) == 13
 
 
 def test_every_reco_crop_has_a_rotation_row():
