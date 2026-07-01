@@ -5,13 +5,13 @@ $root = $PSScriptRoot
 
 $backend = Start-Process -PassThru -NoNewWindow `
   -FilePath "$root\backend\.venv\Scripts\python.exe" `
-  -ArgumentList "-m", "uvicorn", "app.main:app", "--app-dir", "$root\backend", "--host", "127.0.0.1", "--port", "8077"
+  -ArgumentList "-m", "uvicorn", "app.main:app", "--app-dir", "$root\backend", "--host", "127.0.0.1", "--port", "9271"
 
 $frontend = Start-Process -PassThru -NoNewWindow `
   -FilePath "pnpm" -ArgumentList "-C", "$root\frontend", "dev"
 
-Write-Host "Backend  -> http://127.0.0.1:8077  (PID $($backend.Id))" -ForegroundColor Green
-Write-Host "Frontend -> http://127.0.0.1:3007  (PID $($frontend.Id))" -ForegroundColor Cyan
+Write-Host "Backend  -> http://127.0.0.1:9271  (PID $($backend.Id))" -ForegroundColor Green
+Write-Host "Frontend -> http://127.0.0.1:4319  (PID $($frontend.Id))" -ForegroundColor Cyan
 Write-Host "Press Ctrl+C to stop both." -ForegroundColor Yellow
 
 try {

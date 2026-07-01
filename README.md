@@ -1,68 +1,108 @@
-# CropAI PK - Crop Recommendation, Yield & Rotation
+# CropAI PK
 
-A full-stack web application for Pakistani agriculture with three capabilities:
+AI-powered **crop recommendation**, **yield prediction**, and **crop rotation planning**
+for Pakistani agriculture - built entirely on real, public agricultural data, with a
+clean multilingual interface (English, Urdu, Hindi).
 
-1. **Crop Recommendation** - soil (N, P, K, pH) + live weather → best crops, ranked.
-2. **Yield Prediction** - crop + year + climate → expected yield (t/ha) + history chart.
-3. **Rotation Planning** - a crop → what to plant next, what to avoid, and why.
+**Author:** Muhammad Abdullah Awais - [abdullahawais.com](https://abdullahawais.com)
 
-## Architecture
+---
 
-```
-e:\SM\
-  data/       shared datasets (CSV) + methodology README
-  scripts/    PowerShell dataset generator
-  backend/    FastAPI + scikit-learn ML service        (port 8077)
-  frontend/   Next.js 16 (App Router, pnpm, Tailwind v4) (port 3007)
-```
+## Features
 
-The browser talks only to Next.js. Next.js route handlers proxy ML calls to the
-FastAPI backend (no CORS) and call Open-Meteo for weather. Three separate models,
-chained in the UI: recommendation → rotation / yield.
+- **Crop Recommendation** - enter soil nutrients (N, P, K, pH) and a location; live
+  weather auto-fills temperature, humidity, and rainfall, and a machine-learning model
+  ranks the best crops for your field by confidence.
+- **Yield Prediction** - real FAO/OWID yield for 13 Pakistani crops (1961-2024). Pick a
+  crop and year to see the expected yield and its full historical trend.
+- **Rotation Planning** - pick a crop to see what to plant next season and what to avoid,
+  based on agronomic rules (botanical family, nitrogen role, cropping systems).
+- **Multilingual** - full UI in **English**, **Urdu** (right-to-left), and **Hindi**,
+  including translated crop names. Language is remembered across visits.
+- **Light / dark mode**, responsive, accessible, and mobile-friendly.
 
-## Prerequisites
+## Tech stack
 
-- **Node 18+ and pnpm** (frontend).
-- **Python 3.11+** - a real interpreter, not the Microsoft Store stub. The
-  project was built with Python 3.14 via the `py` launcher.
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Recharts |
+| Backend | FastAPI, scikit-learn, pandas |
+| ML | RandomForest (classification + regression) |
+| Weather | Open-Meteo (free, no API key) |
+| i18n | Custom React context (en / ur / hi) with RTL support |
 
-## Run the backend (terminal 1)
+The browser talks only to Next.js; ML calls are proxied server-side to FastAPI, and
+weather is proxied through a Next.js route handler.
 
-```powershell
-cd e:\SM\backend
-py -3.14 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m training.eval_report          # train models (once)
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir . --port 8077
-```
+## Data (real only)
 
-Docs at http://localhost:8077/docs · health at http://localhost:8077/health
+No synthetic, generated, or projected rows - every dataset is real.
 
-## Run the frontend (terminal 2)
+- **Recommendation** - `data/pakistan_crop_recommendation.csv`: the canonical
+  crop-recommendation dataset (22 crops; N, P, K, temperature, humidity, pH, rainfall).
+- **Yield** - `data/pakistan_yield_real.csv`: real FAO / Our World in Data yields for
+  13 crops, 1961-2024 (`crop, year, yield_t_ha`).
+- **Rotation** - `data/pakistan_crop_rotation_rules.csv`: curated agronomic rules
+  (established facts; there is no ML dataset for rotation).
 
-```powershell
-cd e:\SM\frontend
+See `data/README.md` for sources and details.
+
+## Getting started
+
+### Prerequisites
+
+- **Node.js** 18+ and **pnpm**
+- **Python 3.11+** (a real interpreter, not the Windows Store stub)
+
+### Install
+
+```bash
+# Frontend + root tooling
 pnpm install
-# .env.local already points API_URL at http://127.0.0.1:8077
+pnpm -C frontend install
+
+# Backend (Windows PowerShell)
+py -3.14 -m venv backend/.venv
+backend/.venv/Scripts/python.exe -m pip install -r backend/requirements.txt
+```
+
+### Train the models
+
+```bash
+backend/.venv/Scripts/python.exe -m training.eval_report   # run from backend/
+```
+
+### Run everything (one command)
+
+```bash
 pnpm dev
 ```
 
-Open http://localhost:3007
+- Frontend: http://localhost:4319
+- Backend API + docs: http://localhost:9271/docs
 
-> Ports 8077/3007 are used because 8000/3000 are occupied by other apps on this
-> machine. Change them in `backend/.env` and `frontend/package.json` if needed.
+## Project structure
+
+```
+frontend/   Next.js app (UI, i18n, API proxy routes)
+backend/    FastAPI + scikit-learn (models, training, endpoints)
+data/       real datasets (shared, read by training)
+scripts/    data utilities
+```
 
 ## Honesty notes
 
-- The **recommendation** model trains on reference-grounded *synthetic* data
-  (real measured ranges for 7 crops, published Pakistani agronomic ranges for 8).
-  High accuracy is expected and is **not** proof of field validity.
-- **Yield** uses real FAO data for **7 crops only** - no cotton or sugarcane.
-  Measured through **2024** for wheat/rice/maize/potato/soybean (via Our World in
-  Data) and 2013 for sorghum/sweet potato; 2025–2026 are trend projections, flagged
-  as such. Unsupported crops return a graceful "not available" state.
-- Weather **rainfall** from Open-Meteo is recent precipitation, not the seasonal
-  total the model expects - it is auto-filled but flagged for the user to verify.
+- Recommendation accuracy is high because the real dataset's classes are well separated;
+  validate against local soil tests before field use.
+- Recommendation (22 crops) and yield (13 crops) barely overlap - that is the true shape
+  of the available real data. **Cotton** is recommendation-only (no public yield series).
+- Rainfall auto-filled from the weather API is recent precipitation, not the seasonal
+  total the model expects; it is pre-filled but editable and flagged.
 
-See `data/README.md` for full dataset methodology and `backend/README.md` for the
-ML/API details.
+## License
+
+For research and educational use.
+
+---
+
+Built by **Muhammad Abdullah Awais** - [abdullahawais.com](https://abdullahawais.com)

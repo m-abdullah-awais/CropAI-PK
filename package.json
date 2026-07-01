@@ -5,7 +5,7 @@
   "description": "Run the CropAI PK backend (FastAPI) and frontend (Next.js) together.",
   "scripts": {
     "dev": "concurrently -k -n backend,frontend -c green,cyan \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
-    "dev:backend": "backend\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8077",
+    "dev:backend": "backend\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 9271",
     "dev:frontend": "pnpm -C frontend dev",
     "train": "backend\\.venv\\Scripts\\python.exe -m training.eval_report",
     "setup": "pnpm -C frontend install"

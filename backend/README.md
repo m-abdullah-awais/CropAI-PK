@@ -25,9 +25,9 @@ py -3.14 -m venv .venv
 ## Run the API
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --port 8077 --reload
-# Docs:   http://localhost:8077/docs
-# Health: http://localhost:8077/health
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --port 9271 --reload
+# Docs:   http://localhost:9271/docs
+# Health: http://localhost:9271/health
 ```
 
 ## Endpoints

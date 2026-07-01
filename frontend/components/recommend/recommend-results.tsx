@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, LineChart, RefreshCw, Trophy } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ConfidenceBar } from "@/components/common/confidence-bar";
 import { cn } from "@/lib/utils";
 import type { RecommendResponse } from "@/lib/types";
+import { useI18n } from "@/lib/i18n/provider";
 
 const CONF_VARIANT = {
   high: "success",
@@ -14,11 +17,10 @@ const CONF_VARIANT = {
 } as const;
 
 export function RecommendResults({ data }: { data: RecommendResponse }) {
+  const { t, tCrop } = useI18n();
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
-        Top {data.recommendations.length} crops for your soil &amp; climate:
-      </p>
+      <p className="text-sm text-muted-foreground">{t.recommend.topCrops}</p>
       {data.recommendations.map((r, i) => (
         <Card
           key={r.crop}
@@ -32,9 +34,11 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 {i === 0 && <Trophy className="size-5 text-accent" />}
-                <span className="text-lg font-semibold">{r.display}</span>
+                <span className="text-lg font-semibold">
+                  {tCrop(r.crop, r.display)}
+                </span>
                 <Badge variant={CONF_VARIANT[r.confidence]}>
-                  {r.confidence} confidence
+                  {t.recommend.confidence[r.confidence]}
                 </Badge>
               </div>
               <span className="text-xs text-muted-foreground">#{i + 1}</span>
@@ -49,7 +53,7 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
                 href={`/rotation?crop=${r.crop}`}
                 className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
               >
-                <RefreshCw /> Plan rotation
+                <RefreshCw /> {t.recommend.planRotation}
               </Link>
               {r.yield_available ? (
                 <Link
@@ -58,11 +62,11 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
                     buttonVariants({ variant: "outline", size: "sm" }),
                   )}
                 >
-                  <LineChart /> Predict yield
+                  <LineChart /> {t.recommend.predictYield}
                 </Link>
               ) : (
                 <span className="inline-flex items-center text-xs text-muted-foreground">
-                  Yield data not available for this crop
+                  {t.recommend.noYield}
                 </span>
               )}
             </div>
@@ -73,7 +77,7 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
         href="/rotation"
         className="inline-flex items-center gap-1 text-sm font-medium text-primary"
       >
-        Explore all rotation plans <ArrowRight className="size-4" />
+        {t.recommend.exploreRotation} <ArrowRight className="size-4 rtl:rotate-180" />
       </Link>
     </div>
   );

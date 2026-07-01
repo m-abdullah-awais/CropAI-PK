@@ -3,11 +3,13 @@
 import * as React from "react";
 import { getHealth } from "@/lib/api/ml";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/provider";
 
 type State = "checking" | "online" | "offline";
 
 export function HealthBadge() {
   const [state, setState] = React.useState<State>("checking");
+  const t = useT();
 
   React.useEffect(() => {
     let active = true;
@@ -20,9 +22,9 @@ export function HealthBadge() {
   }, []);
 
   const map = {
-    checking: { label: "Checking API…", dot: "bg-muted-foreground" },
-    online: { label: "API online", dot: "bg-primary" },
-    offline: { label: "API offline", dot: "bg-destructive" },
+    checking: { label: t.health.checking, dot: "bg-muted-foreground" },
+    online: { label: t.health.online, dot: "bg-primary" },
+    offline: { label: t.health.offline, dot: "bg-destructive" },
   }[state];
 
   return (

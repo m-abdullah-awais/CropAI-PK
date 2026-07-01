@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { AlertTriangle, Sprout, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,8 +9,11 @@ import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/units";
 import { getCrop } from "@/lib/crops";
 import type { YieldResponse } from "@/lib/types";
+import { useI18n } from "@/lib/i18n/provider";
 
 export function YieldResult({ data }: { data: YieldResponse }) {
+  const { t, tCrop } = useI18n();
+  const display = tCrop(data.crop, data.display);
   if (!data.available) {
     return (
       <Card className="border-dashed">
@@ -17,7 +22,7 @@ export function YieldResult({ data }: { data: YieldResponse }) {
             <Sprout className="size-6" />
           </span>
           <p className="mt-4 font-medium">
-            Yield not available for {data.display}
+            {t.yield.unavailable} {display}
           </p>
           <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
             {data.message}
@@ -43,7 +48,7 @@ export function YieldResult({ data }: { data: YieldResponse }) {
       <CardContent className="p-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <TrendingUp className="size-4 text-primary" />
-          Yield for {data.display} ({data.year})
+          {t.yield.yieldFor} {display} ({data.year})
         </div>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-4xl font-bold tracking-tight">
@@ -70,7 +75,7 @@ export function YieldResult({ data }: { data: YieldResponse }) {
               "mt-4",
             )}
           >
-            Plan rotation for {data.display}
+            {t.yield.planRotation} {display}
           </Link>
         )}
       </CardContent>

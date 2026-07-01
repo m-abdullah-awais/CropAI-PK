@@ -10,21 +10,22 @@ import { WeatherAutofill } from "@/components/common/weather-autofill";
 import { recommend } from "@/lib/api/ml";
 import { recommendSchema } from "@/lib/schemas/recommend";
 import type { RecommendResponse } from "@/lib/types";
+import { useT } from "@/lib/i18n/provider";
 
 type FieldName =
   | "N" | "P" | "K" | "ph" | "temperature" | "humidity" | "rainfall";
 
-const SOIL_FIELDS: { name: FieldName; label: string; hint: string }[] = [
-  { name: "N", label: "Nitrogen (N)", hint: "0-140" },
-  { name: "P", label: "Phosphorus (P)", hint: "5-145" },
-  { name: "K", label: "Potassium (K)", hint: "5-205" },
-  { name: "ph", label: "Soil pH", hint: "3.5-9.5" },
+const SOIL_FIELDS: { name: FieldName; hint: string }[] = [
+  { name: "N", hint: "0-140" },
+  { name: "P", hint: "5-145" },
+  { name: "K", hint: "5-205" },
+  { name: "ph", hint: "3.5-9.5" },
 ];
 
-const CLIMATE_FIELDS: { name: FieldName; label: string; hint: string }[] = [
-  { name: "temperature", label: "Temperature (°C)", hint: "auto / 8-44" },
-  { name: "humidity", label: "Humidity (%)", hint: "auto / 14-100" },
-  { name: "rainfall", label: "Rainfall (mm)", hint: "auto - verify" },
+const CLIMATE_FIELDS: { name: FieldName; hint: string }[] = [
+  { name: "temperature", hint: "8-44" },
+  { name: "humidity", hint: "14-100" },
+  { name: "rainfall", hint: "20-300" },
 ];
 
 const DEFAULTS: Record<FieldName, string> = {
@@ -39,6 +40,7 @@ export function RecommendForm({
   onResult: (r: RecommendResponse | null) => void;
   onLoadingChange: (loading: boolean) => void;
 }) {
+  const t = useT();
   const [values, setValues] = React.useState<Record<FieldName, string>>(DEFAULTS);
   const [errors, setErrors] = React.useState<Partial<Record<FieldName, string>>>({});
   const [submitting, setSubmitting] = React.useState(false);
@@ -49,7 +51,6 @@ export function RecommendForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Build a numeric payload from the current controlled state.
     const numeric = Object.fromEntries(
       (Object.keys(values) as FieldName[]).map((k) => [
         k,
@@ -92,13 +93,14 @@ export function RecommendForm({
 
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold text-muted-foreground">
-          Soil (enter from your soil test)
+          {t.recommend.soil}
         </legend>
         <div className="grid grid-cols-2 gap-3">
           {SOIL_FIELDS.map((f) => (
             <Field
               key={f.name}
-              {...f}
+              label={t.recommend.fields[f.name]}
+              hint={f.hint}
               value={values[f.name]}
               error={errors[f.name]}
               onChange={(v) => set(f.name, v)}
@@ -109,13 +111,14 @@ export function RecommendForm({
 
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold text-muted-foreground">
-          Climate (auto-filled from weather, editable)
+          {t.recommend.climate}
         </legend>
         <div className="grid grid-cols-3 gap-3">
           {CLIMATE_FIELDS.map((f) => (
             <Field
               key={f.name}
-              {...f}
+              label={t.recommend.fields[f.name]}
+              hint={f.hint}
               value={values[f.name]}
               error={errors[f.name]}
               onChange={(v) => set(f.name, v)}
@@ -126,7 +129,7 @@ export function RecommendForm({
 
       <Button type="submit" size="lg" className="w-full" disabled={submitting}>
         {submitting ? <Loader2 className="animate-spin" /> : <Sprout />}
-        Recommend crops
+        {t.recommend.submit}
       </Button>
     </form>
   );
@@ -147,7 +150,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-baseline justify-between gap-2">
         <Label>{label}</Label>
         <span className="text-[11px] text-muted-foreground">{hint}</span>
       </div>

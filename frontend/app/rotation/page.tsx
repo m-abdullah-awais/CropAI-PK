@@ -14,8 +14,10 @@ import { RotationCards } from "@/components/rotation/rotation-cards";
 import { ROTATION_CROPS } from "@/lib/crops";
 import { getRotation } from "@/lib/api/ml";
 import type { RotationResponse } from "@/lib/types";
+import { useT } from "@/lib/i18n/provider";
 
 function RotationInner() {
+  const t = useT();
   const queryCrop = useSearchParams().get("crop");
   const initial = ROTATION_CROPS.some((c) => c.slug === queryCrop)
     ? queryCrop!
@@ -50,14 +52,14 @@ function RotationInner() {
     <div className="mx-auto max-w-4xl px-4 py-10">
       <PageHeader
         icon={RefreshCw}
-        title="Rotation Planning"
-        description="Pick a crop to see what to plant next, what to avoid, and why - based on Pakistani cropping systems."
+        title={t.rotation.title}
+        description={t.rotation.desc}
       />
 
       <Card className="mb-6">
         <CardContent className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:gap-4">
           <Label htmlFor="crop" className="shrink-0">
-            Current crop
+            {t.rotation.crop}
           </Label>
           <div className="w-full sm:max-w-xs">
             <CropSelect

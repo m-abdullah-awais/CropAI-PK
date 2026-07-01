@@ -9,17 +9,19 @@ import { RecommendForm } from "@/components/recommend/recommend-form";
 import { RecommendResults } from "@/components/recommend/recommend-results";
 import { RecommendSkeleton } from "@/components/recommend/recommend-skeleton";
 import type { RecommendResponse } from "@/lib/types";
+import { useT } from "@/lib/i18n/provider";
 
 export default function RecommendPage() {
   const [result, setResult] = React.useState<RecommendResponse | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const t = useT();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <PageHeader
         icon={Sprout}
-        title="Crop Recommendation"
-        description="Enter your soil test values and a location. We auto-fill live weather, then rank the best crops for your field."
+        title={t.recommend.title}
+        description={t.recommend.desc}
       />
 
       <div className="grid gap-6 lg:grid-cols-12">
@@ -42,8 +44,8 @@ export default function RecommendPage() {
           ) : (
             <ResultEmpty
               icon={Sprout}
-              title="Your recommendations will appear here"
-              description="Fill in the soil and climate values, then click “Recommend crops”."
+              title={t.recommend.empty}
+              description={t.recommend.emptyDesc}
             />
           )}
         </div>

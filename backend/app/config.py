@@ -16,10 +16,10 @@ class Settings(BaseSettings):
         env_file=str(BASE_DIR / ".env"), env_file_encoding="utf-8", extra="ignore"
     )
 
-    port: int = 8077
+    port: int = 9271
     allowed_origins: list[str] = [
-        "http://localhost:3007",
-        "http://127.0.0.1:3007",
+        "http://localhost:4319",
+        "http://127.0.0.1:4319",
     ]
     api_version: str = "1.0.0"
 

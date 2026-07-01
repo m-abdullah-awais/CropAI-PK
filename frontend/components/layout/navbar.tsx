@@ -7,17 +7,20 @@ import { Leaf, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-
-const LINKS = [
-  { href: "/", label: "Dashboard" },
-  { href: "/recommend", label: "Recommend" },
-  { href: "/yield", label: "Yield" },
-  { href: "/rotation", label: "Rotation" },
-];
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { useT } from "@/lib/i18n/provider";
 
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
+  const t = useT();
+
+  const links = [
+    { href: "/", label: t.nav.dashboard },
+    { href: "/recommend", label: t.nav.recommend },
+    { href: "/yield", label: t.nav.yield },
+    { href: "/rotation", label: t.nav.rotation },
+  ];
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -35,7 +38,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -50,10 +53,12 @@ export function Navbar() {
             </Link>
           ))}
           <span className="mx-1 h-6 w-px bg-border" />
+          <LanguageSwitcher />
           <ThemeToggle />
         </nav>
 
         <div className="flex items-center gap-1 md:hidden">
+          <LanguageSwitcher />
           <ThemeToggle />
           <Button
             variant="ghost"
@@ -69,7 +74,7 @@ export function Navbar() {
       {open && (
         <nav className="border-t bg-background md:hidden">
           <div className="mx-auto flex max-w-6xl flex-col p-2">
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}

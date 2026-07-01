@@ -135,3 +135,17 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up { animation: none; }
 }
+
+/* Script-specific fonts by active language (set on <html lang>). */
+html[lang="ur"] {
+  --font-sans: var(--font-urdu), var(--font-geist-sans), ui-sans-serif, sans-serif;
+}
+html[lang="hi"] {
+  --font-sans: var(--font-hindi), var(--font-geist-sans), ui-sans-serif, sans-serif;
+}
+html[lang="ur"] body {
+  line-height: 1.85;
+}
+html[lang="hi"] body {
+  line-height: 1.7;
+}

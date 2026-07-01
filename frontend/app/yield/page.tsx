@@ -15,8 +15,10 @@ import { YieldTrendChart } from "@/components/yield/yield-trend-chart";
 import { getYieldHistory, predictYield } from "@/lib/api/ml";
 import type { YieldForm as FormValues } from "@/lib/schemas/yield";
 import type { YieldHistoryResponse, YieldResponse } from "@/lib/types";
+import { useI18n } from "@/lib/i18n/provider";
 
 function YieldInner() {
+  const { t, tCrop } = useI18n();
   const initialCrop = useSearchParams().get("crop") ?? undefined;
   const [result, setResult] = React.useState<YieldResponse | null>(null);
   const [history, setHistory] = React.useState<YieldHistoryResponse | null>(
@@ -49,11 +51,7 @@ function YieldInner() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <PageHeader
-        icon={LineChart}
-        title="Yield Prediction"
-        description="Estimate expected yield for major Pakistani crops, with the historical trend from FAO data (measured through 2024)."
-      />
+      <PageHeader icon={LineChart} title={t.yield.title} description={t.yield.desc} />
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-5">
@@ -81,7 +79,7 @@ function YieldInner() {
                 <Card>
                   <CardContent className="p-5">
                     <p className="mb-3 text-sm font-medium">
-                      Historical yield - {history.display}
+                      {t.yield.history} - {tCrop(history.crop, history.display)}
                     </p>
                     <YieldTrendChart
                       series={history.series}
@@ -94,8 +92,8 @@ function YieldInner() {
           ) : (
             <ResultEmpty
               icon={LineChart}
-              title="Your yield estimate will appear here"
-              description="Pick a crop and year, then click “Predict yield”."
+              title={t.yield.empty}
+              description={t.yield.emptyDesc}
             />
           )}
         </div>
