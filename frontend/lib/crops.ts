@@ -15,9 +15,10 @@ const RECO_CROPS = [
   "millet", "barley",
 ];
 
-// 7 crops with FAO yield data (canonical slugs).
+// 9 crops with FAO/OWID yield data (canonical slugs).
 const YIELD_CROPS = new Set([
   "maize", "wheat", "rice", "potato", "sorghum", "soybean", "sweet_potato",
+  "sugarcane", "barley",
 ]);
 
 const DISPLAY_OVERRIDES: Record<string, string> = {

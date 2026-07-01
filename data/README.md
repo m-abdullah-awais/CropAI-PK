@@ -48,31 +48,30 @@ crop-outcome records before production use.
 
 ## 2. pakistan_crop_yield.csv - yield prediction (regression)
 
-2,268 rows, Pakistan only, years **1990-2026**. Target `hg/ha_yield`.
+2,916 rows, Pakistan only, years **1990-2026**, **9 crops**. Target `hg/ha_yield`.
 
-> **Real vs projected (yield target):**
-> - **1990-2013** - original real FAO data.
-> - **2014-2024** - **real measured FAO yields** for wheat, rice, maize, potato,
->   and soybean, sourced from Our World in Data (FAO "Production: Crops and livestock
->   products"), stored in `pakistan_recent_yields.csv` and merged in.
-> - **2025-2026** (all crops) and **2014-2026 for sorghum & sweet potato** (no OWID
->   series) - **trend projections**.
+> **Real vs projected (yield target):** the real yields come from
+> `pakistan_yield_real.csv` (the source of truth, 1990-2024).
+> - **1990-2024** - **real measured FAO/OWID yields** for wheat, rice, maize, potato,
+>   soybean, **sugarcane**, and **barley** (Our World in Data, FAO "Production: Crops
+>   and livestock products"). Sorghum & sweet potato are real only **through 2013**
+>   (no OWID series).
+> - **2025-2026** (all crops) and post-2013 for sorghum/sweet potato - **trend projections**.
 >
-> Non-yield features on the added rows (rainfall, pesticides, avg_temp) are estimates
-> (historical mean / linear trend / base-year pattern + slight warming); only the
-> yield target uses measured values where available. The API flags a prediction as a
-> projection only when the requested year exceeds that crop's last measured year
-> (2024 for the five OWID crops, 2013 for sorghum/sweet potato).
+> National context features (rainfall, pesticides, avg_temp) are shared across crops
+> per year; the builder reuses Wheat's rows as a per-year template and swaps in each
+> crop's real yield. The API flags a prediction as a projection only when the requested
+> year exceeds that crop's last measured year (`yield_real_through()` in the backend).
 >
-> Rebuild with `scripts/extend_yield_dataset.py` (idempotent). To refresh the real
-> recent data, re-download from OWID into `pakistan_recent_yields.csv`.
+> Rebuild with `scripts/extend_yield_dataset.py` (idempotent, driven by
+> `pakistan_yield_real.csv`).
 
 Columns: `Area, Item, Year, hg/ha_yield, average_rain_fall_mm_per_year, pesticides_tonnes, avg_temp`.
 
-- Filtered from the FAO/World-Bank dataset (`crop_yield.csv`). Real measured values, 0 nulls.
-- Crops (7): Maize, Wheat, Rice paddy, Potatoes, Sorghum, Soybeans, Sweet potatoes.
-- ⚠️ **Gap:** FAO's subset has **no cotton or sugarcane** (two of Pakistan's biggest
-  crops). See "Planned upgrade" below.
+- Crops (9): Wheat, Rice paddy, Maize, Potatoes, Soybeans, Sorghum, Sweet potatoes,
+  **Sugar cane**, **Barley**.
+- ⚠️ **Remaining gap:** **cotton** has no public yield series (OWID has no cotton
+  grapher; the FAOSTAT API now requires auth). Sugarcane is now covered.
 - Different granularity from recommendation: national/annual, not per soil sample.
 
 ## 3. pakistan_crop_rotation_rules.csv - rotation (rules engine)

@@ -59,7 +59,7 @@ export function YieldForm({
           onChange={setCrop}
         />
         <p className="text-[11px] text-muted-foreground">
-          Yield data is available for 7 major Pakistani crops.
+          Yield data is available for 9 major Pakistani crops.
         </p>
       </div>
 

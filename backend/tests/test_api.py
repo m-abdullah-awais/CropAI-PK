@@ -23,7 +23,7 @@ def test_health(client):
     body = r.json()
     assert body["models_loaded"] is True
     assert body["n_crops_recommendation"] == 15
-    assert body["n_crops_yield"] == 7
+    assert body["n_crops_yield"] == 9
 
 
 def test_recommend_returns_ranked_crops(client):

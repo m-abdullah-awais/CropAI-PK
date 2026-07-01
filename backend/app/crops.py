@@ -26,6 +26,8 @@ YIELD_ITEM_TO_CANON: dict[str, str] = {
     "Sorghum": "sorghum",
     "Soybeans": "soybean",
     "Sweet potatoes": "sweet_potato",
+    "Sugar cane": "sugarcane",
+    "Barley": "barley",
 }
 CANON_TO_YIELD_ITEM: dict[str, str] = {v: k for k, v in YIELD_ITEM_TO_CANON.items()}
 
