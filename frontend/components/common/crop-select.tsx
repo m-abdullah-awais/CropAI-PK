@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import * as React from "react";
+import { Combobox, type ComboItem } from "@/components/ui/combobox";
 import type { CropDef } from "@/lib/crops";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -23,19 +18,23 @@ export function CropSelect({
   id?: string;
   placeholder?: string;
 }) {
-  const { tCrop } = useI18n();
+  const { t, tCrop } = useI18n();
+
+  // Localize labels for search + display; recompute when the language changes.
+  const items = React.useMemo<ComboItem[]>(
+    () => crops.map((c) => ({ value: c.slug, label: tCrop(c.slug, c.display) })),
+    [crops, tCrop],
+  );
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger id={id} className="w-full">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent className="max-h-72">
-        {crops.map((c) => (
-          <SelectItem key={c.slug} value={c.slug}>
-            {tCrop(c.slug, c.display)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Combobox
+      id={id}
+      items={items}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      searchPlaceholder={t.common.searchPlaceholder}
+      emptyText={t.common.noResults}
+    />
   );
 }

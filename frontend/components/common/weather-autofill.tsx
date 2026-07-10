@@ -1,16 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, CloudSun, Info, Loader2, MapPin } from "lucide-react";
+import { CheckCircle2, Info, Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CitySelect } from "@/components/common/city-select";
 import { getWeather } from "@/lib/api/ml";
 import type { WeatherResponse } from "@/lib/types";
 import { useT } from "@/lib/i18n/provider";
@@ -20,17 +19,17 @@ export function WeatherAutofill({
 }: {
   onResult: (w: WeatherResponse) => void;
 }) {
-  const [location, setLocation] = React.useState("");
+  const [city, setCity] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [filled, setFilled] = React.useState<string | null>(null);
   const t = useT();
 
-  async function fetchWeather() {
-    if (!location.trim()) return;
+  async function selectCity(name: string) {
+    setCity(name);
     setLoading(true);
     setFilled(null);
     try {
-      const w = await getWeather(location);
+      const w = await getWeather(name);
       onResult(w);
       setFilled(w.location);
       toast.success(w.location);
@@ -62,34 +61,23 @@ export function WeatherAutofill({
           </TooltipContent>
         </Tooltip>
       </div>
-      <div className="mt-2 flex gap-2">
-        <Input
+      <div className="mt-2">
+        <CitySelect
           id="location"
-          placeholder={t.recommend.locationPlaceholder}
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              fetchWeather();
-            }
-          }}
+          value={city}
+          onChange={selectCity}
+          loading={loading}
         />
-        <Button
-          type="button"
-          variant="accent"
-          onClick={fetchWeather}
-          disabled={loading}
-        >
-          {loading ? <Loader2 className="animate-spin" /> : <CloudSun />}
-          {loading ? t.recommend.fetching : t.recommend.fetch}
-        </Button>
       </div>
-      {filled && (
+      {loading ? (
+        <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Loader2 className="size-3.5 animate-spin" /> {t.recommend.fetching}
+        </p>
+      ) : filled ? (
         <p className="mt-2 flex items-center gap-1.5 text-xs text-tool-recommend">
           <CheckCircle2 className="size-3.5" /> {filled}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }

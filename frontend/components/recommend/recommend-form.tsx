@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, Sprout } from "lucide-react";
+import { CloudSun, FlaskConical, Loader2, Sprout, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { WeatherAutofill } from "@/components/common/weather-autofill";
 import { recommend } from "@/lib/api/ml";
 import { recommendSchema } from "@/lib/schemas/recommend";
@@ -15,17 +16,27 @@ import { useT } from "@/lib/i18n/provider";
 type FieldName =
   | "N" | "P" | "K" | "ph" | "temperature" | "humidity" | "rainfall";
 
-const SOIL_FIELDS: { name: FieldName; hint: string }[] = [
-  { name: "N", hint: "0-140" },
-  { name: "P", hint: "5-145" },
-  { name: "K", hint: "5-205" },
-  { name: "ph", hint: "3.5-9.5" },
+interface FieldConfig {
+  name: FieldName;
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
+}
+
+// Slider bounds track the real dataset ranges; the number input still accepts
+// out-of-range real soil-test values (zod validates the wider window on submit).
+const SOIL_FIELDS: FieldConfig[] = [
+  { name: "N", min: 0, max: 140, step: 1, unit: "" },
+  { name: "P", min: 5, max: 145, step: 1, unit: "" },
+  { name: "K", min: 5, max: 205, step: 1, unit: "" },
+  { name: "ph", min: 3.5, max: 9.5, step: 0.1, unit: "pH" },
 ];
 
-const CLIMATE_FIELDS: { name: FieldName; hint: string }[] = [
-  { name: "temperature", hint: "8-44" },
-  { name: "humidity", hint: "14-100" },
-  { name: "rainfall", hint: "20-300" },
+const CLIMATE_FIELDS: FieldConfig[] = [
+  { name: "temperature", min: 8, max: 44, step: 0.5, unit: "°C" },
+  { name: "humidity", min: 14, max: 100, step: 1, unit: "%" },
+  { name: "rainfall", min: 20, max: 300, step: 1, unit: "mm" },
 ];
 
 const DEFAULTS: Record<FieldName, string> = {
@@ -81,51 +92,39 @@ export function RecommendForm({
     }
   }
 
+  const renderField = (f: FieldConfig) => (
+    <SliderField
+      key={f.name}
+      label={t.recommend.fields[f.name]}
+      config={f}
+      value={values[f.name]}
+      error={errors[f.name]}
+      onChange={(v) => set(f.name, v)}
+    />
+  );
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <WeatherAutofill
-        onResult={(w) => {
-          set("temperature", String(Math.round(w.temperature * 10) / 10));
-          set("humidity", String(Math.round(w.humidity)));
-          set("rainfall", String(Math.round(w.rainfall.value * 10) / 10));
-        }}
-      />
-
-      <fieldset className="space-y-3">
-        <legend className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {t.recommend.soil}
-        </legend>
-        <div className="grid grid-cols-2 gap-3">
-          {SOIL_FIELDS.map((f) => (
-            <Field
-              key={f.name}
-              label={t.recommend.fields[f.name]}
-              hint={f.hint}
-              value={values[f.name]}
-              error={errors[f.name]}
-              onChange={(v) => set(f.name, v)}
-            />
-          ))}
+    <form onSubmit={handleSubmit} className="space-y-7">
+      <section className="space-y-5">
+        <SectionHeader icon={FlaskConical} title={t.recommend.soil} />
+        <div className="grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
+          {SOIL_FIELDS.map(renderField)}
         </div>
-      </fieldset>
+      </section>
 
-      <fieldset className="space-y-3">
-        <legend className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {t.recommend.climate}
-        </legend>
-        <div className="grid grid-cols-3 gap-3">
-          {CLIMATE_FIELDS.map((f) => (
-            <Field
-              key={f.name}
-              label={t.recommend.fields[f.name]}
-              hint={f.hint}
-              value={values[f.name]}
-              error={errors[f.name]}
-              onChange={(v) => set(f.name, v)}
-            />
-          ))}
+      <section className="space-y-5 border-t border-hairline pt-7">
+        <SectionHeader icon={CloudSun} title={t.recommend.climate} />
+        <WeatherAutofill
+          onResult={(w) => {
+            set("temperature", String(Math.round(w.temperature * 10) / 10));
+            set("humidity", String(Math.round(w.humidity)));
+            set("rainfall", String(Math.round(w.rainfall.value * 10) / 10));
+          }}
+        />
+        <div className="grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
+          {CLIMATE_FIELDS.map(renderField)}
         </div>
-      </fieldset>
+      </section>
 
       <Button type="submit" size="lg" className="w-full" disabled={submitting}>
         {submitting ? <Loader2 className="animate-spin" /> : <Sprout />}
@@ -135,34 +134,71 @@ export function RecommendForm({
   );
 }
 
-function Field({
+function SectionHeader({ icon: Icon, title }: { icon: LucideIcon; title: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="flex size-7 items-center justify-center rounded-md bg-tool-recommend/10 text-tool-recommend">
+        <Icon className="size-4" />
+      </span>
+      <h3 className="text-sm font-semibold">{title}</h3>
+    </div>
+  );
+}
+
+function SliderField({
   label,
-  hint,
+  config,
   value,
   error,
   onChange,
 }: {
   label: string;
-  hint: string;
+  config: FieldConfig;
   value: string;
   error?: string;
   onChange: (v: string) => void;
 }) {
+  const { min, max, step, unit } = config;
+  const parsed = Number(value);
+  const num =
+    value === "" || Number.isNaN(parsed)
+      ? min
+      : Math.min(max, Math.max(min, parsed));
+
   return (
-    <div className="space-y-1.5">
-      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
-        <Label>{label}</Label>
-        <span className="text-[11px] text-muted-foreground">{hint}</span>
+    <div className="space-y-2.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <Label className="text-[13px]">{label}</Label>
+        <div className="flex items-baseline gap-1">
+          <Input
+            type="number"
+            step="any"
+            inputMode="decimal"
+            value={value}
+            aria-label={label}
+            aria-invalid={error ? true : undefined}
+            onChange={(e) => onChange(e.target.value)}
+            className="h-8 w-16 px-2 text-end text-sm tabular-nums"
+          />
+          <span className="w-6 text-xs text-muted-foreground">{unit}</span>
+        </div>
       </div>
-      <Input
-        type="number"
-        step="any"
-        inputMode="decimal"
-        value={value}
-        aria-invalid={error ? true : undefined}
-        onChange={(e) => onChange(e.target.value)}
+      <Slider
+        value={[num]}
+        min={min}
+        max={max}
+        step={step}
+        aria-label={label}
+        onValueChange={([v]) => onChange(String(v))}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error ? (
+        <p className="text-xs text-destructive">{error}</p>
+      ) : (
+        <div className="flex justify-between text-[10px] tabular-nums text-muted-foreground/70">
+          <span>{min}</span>
+          <span>{max}</span>
+        </div>
+      )}
     </div>
   );
 }

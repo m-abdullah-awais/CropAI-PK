@@ -108,7 +108,8 @@ function RotationInner() {
         <div className="space-y-6 lg:col-span-5">
           <Card>
             <CardContent className="p-5 sm:p-6">
-              <Label htmlFor="crop" className="mb-2 block">
+              <Label htmlFor="crop" className="mb-2 flex items-center gap-1.5">
+                <RefreshCw className="size-3.5 text-tool-rotation" />
                 {t.rotation.crop}
               </Label>
               <CropSelect

@@ -17,6 +17,16 @@ export default function RecommendPage() {
   const [loading, setLoading] = React.useState(false);
   const t = useT();
 
+  function handleResult(r: RecommendResponse | null) {
+    setResult(r);
+    // On submit (r === null, loading starts) scroll back to the top of the page.
+    if (r === null && typeof window !== "undefined") {
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: 0, behavior: "smooth" }),
+      );
+    }
+  }
+
   return (
     <PageShell>
       <PageHeader
@@ -30,7 +40,7 @@ export default function RecommendPage() {
         <div className="lg:col-span-5">
           <Card className="lg:sticky lg:top-20">
             <CardContent className="p-5 sm:p-6">
-              <RecommendForm onResult={setResult} onLoadingChange={setLoading} />
+              <RecommendForm onResult={handleResult} onLoadingChange={setLoading} />
             </CardContent>
           </Card>
         </div>
