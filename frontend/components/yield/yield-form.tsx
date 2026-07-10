@@ -22,7 +22,7 @@ export function YieldForm({
   const [crop, setCrop] = React.useState(
     supported ? initialCrop! : YIELD_AVAILABLE_CROPS[0].slug,
   );
-  const [year, setYear] = React.useState("2024");
+  const [year, setYear] = React.useState("2026");
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   function handleSubmit(e: React.FormEvent) {

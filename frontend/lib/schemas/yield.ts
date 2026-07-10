@@ -9,5 +9,5 @@ export type YieldForm = z.infer<typeof yieldSchema>;
 
 export const yieldDefaults: YieldForm = {
   crop: "wheat",
-  year: 2024,
+  year: 2026,
 };

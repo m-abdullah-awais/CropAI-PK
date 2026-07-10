@@ -7,18 +7,26 @@ The three sets do not fully overlap; everything keys off the canonical slug.
 
 from __future__ import annotations
 
-# 22 recommendation / rotation crops (labels in the real recommendation CSV).
+# 21 recommendation / rotation crops (labels in the real recommendation CSV).
+# Coffee was dropped: it is not grown commercially in Pakistan, so no real yield exists.
 RECO_CROPS: list[str] = [
     "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
     "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
     "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
-    "apple", "orange", "coconut", "coffee",
+    "apple", "orange", "coconut",
 ]
 
-# 13 crops with real yield data (canonical slugs in pakistan_yield_real.csv).
+# 31 crops with real yield data (FAOSTAT + Pakistan pulse/pomegranate figures).
+# Covers ALL 21 recommendation crops (so recommend -> yield always works) + 10 yield-only.
 YIELD_CROPS: list[str] = [
-    "wheat", "rice", "maize", "potato", "soybean", "sorghum",
-    "sweet_potato", "sugarcane", "barley", "rapeseed", "beans", "peas", "tomato",
+    # all 21 recommendation crops:
+    "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
+    "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
+    "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
+    "apple", "orange", "coconut",
+    # yield-only:
+    "wheat", "potato", "soybean", "sorghum", "sweet_potato", "sugarcane",
+    "barley", "rapeseed", "peas", "tomato",
 ]
 
 YIELD_AVAILABLE: set[str] = set(YIELD_CROPS)

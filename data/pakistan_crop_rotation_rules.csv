@@ -1,23 +1,22 @@
-crop,family,season,nitrogen_role,recommended_next,avoid_next,notes
-rice,Poaceae,Kharif,heavy_feeder,chickpea;lentil;mungbean;blackgram,rice;maize,"Cereal that depletes nitrogen; follow with a nitrogen-fixing legume. Avoid another grass (same family)."
-maize,Poaceae,Kharif,heavy_feeder,chickpea;lentil;mungbean;blackgram,maize;rice,"Heavy feeder; rotate to legumes to restore nitrogen and break grass pests."
+﻿crop,family,season,nitrogen_role,recommended_next,avoid_next,notes
+rice,Poaceae,Kharif,heavy_feeder,chickpea;lentil;mungbean;blackgram,rice;maize,Cereal that depletes nitrogen; follow with a nitrogen-fixing legume. Avoid another grass (same family).
+maize,Poaceae,Kharif,heavy_feeder,chickpea;lentil;mungbean;blackgram,maize;rice,Heavy feeder; rotate to legumes to restore nitrogen and break grass pests.
 cotton,Malvaceae,Kharif,heavy_feeder,chickpea;mungbean;blackgram;lentil,cotton;jute,"Heavy, pest-prone cash crop; follow with a legume. Avoid jute (same family, shared pests)."
-jute,Malvaceae,Kharif,moderate_feeder,chickpea;mungbean;blackgram,jute;cotton,"Fibre crop; follow with a legume. Avoid cotton next (same family)."
-chickpea,Fabaceae,Rabi,nitrogen_fixer,rice;maize;cotton,chickpea;lentil;mungbean;blackgram;kidneybeans;mothbeans;pigeonpeas,"Pulse that fixes nitrogen; follow with a heavy feeder. Avoid pulse-after-pulse."
-lentil,Fabaceae,Rabi,nitrogen_fixer,rice;maize;cotton,lentil;chickpea;mungbean;blackgram;kidneybeans;mothbeans;pigeonpeas,"Cool-season pulse; N-fixer. Rotate to a cereal or cotton to use the fixed nitrogen."
-mungbean,Fabaceae,Kharif,nitrogen_fixer,rice;maize;cotton,mungbean;lentil;chickpea;blackgram;kidneybeans;mothbeans;pigeonpeas,"Short-duration pulse; excellent nitrogen-fixing catch crop between cereals."
-blackgram,Fabaceae,Kharif,nitrogen_fixer,rice;maize;cotton,blackgram;mungbean;lentil;chickpea;kidneybeans;mothbeans;pigeonpeas,"Pulse; N-fixer. Follow with a cereal or cotton. Avoid legume-after-legume."
-kidneybeans,Fabaceae,Rabi,nitrogen_fixer,maize;rice;cotton,kidneybeans;chickpea;lentil;mungbean;blackgram;mothbeans;pigeonpeas,"N-fixing pulse; rotate to a cereal or fibre crop. Avoid same-family pulses next."
-mothbeans,Fabaceae,Kharif,nitrogen_fixer,maize;cotton,mothbeans;chickpea;lentil;mungbean;blackgram;kidneybeans;pigeonpeas,"Drought-tolerant pulse; follow with a feeder crop. Avoid pulse-after-pulse."
-pigeonpeas,Fabaceae,Kharif,nitrogen_fixer,maize;rice;cotton,pigeonpeas;chickpea;lentil;mungbean;blackgram;kidneybeans;mothbeans,"Deep-rooted legume; good before cereals. Avoid back-to-back legumes."
-watermelon,Cucurbitaceae,Kharif,moderate_feeder,chickpea;mungbean;maize,watermelon;muskmelon,"Cucurbit; rotate away from melons to break disease cycles."
-muskmelon,Cucurbitaceae,Kharif,moderate_feeder,chickpea;mungbean;maize,muskmelon;watermelon,"Cucurbit; avoid following with another cucurbit (shared pests/disease)."
-banana,Musaceae,perennial,heavy_feeder,,banana,"Perennial (1-2+ years); intercrop early with short legumes for nitrogen. Not annually rotated."
-papaya,Caricaceae,perennial,moderate_feeder,,papaya,"Short-lived perennial; replant gap of a season and rotate out before replanting papaya."
+jute,Malvaceae,Kharif,moderate_feeder,chickpea;mungbean;blackgram,jute;cotton,Fibre crop; follow with a legume. Avoid cotton next (same family).
+chickpea,Fabaceae,Rabi,nitrogen_fixer,rice;maize;cotton,chickpea;lentil;mungbean;blackgram;kidneybeans;mothbeans;pigeonpeas,Pulse that fixes nitrogen; follow with a heavy feeder. Avoid pulse-after-pulse.
+lentil,Fabaceae,Rabi,nitrogen_fixer,rice;maize;cotton,lentil;chickpea;mungbean;blackgram;kidneybeans;mothbeans;pigeonpeas,Cool-season pulse; N-fixer. Rotate to a cereal or cotton to use the fixed nitrogen.
+mungbean,Fabaceae,Kharif,nitrogen_fixer,rice;maize;cotton,mungbean;lentil;chickpea;blackgram;kidneybeans;mothbeans;pigeonpeas,Short-duration pulse; excellent nitrogen-fixing catch crop between cereals.
+blackgram,Fabaceae,Kharif,nitrogen_fixer,rice;maize;cotton,blackgram;mungbean;lentil;chickpea;kidneybeans;mothbeans;pigeonpeas,Pulse; N-fixer. Follow with a cereal or cotton. Avoid legume-after-legume.
+kidneybeans,Fabaceae,Rabi,nitrogen_fixer,maize;rice;cotton,kidneybeans;chickpea;lentil;mungbean;blackgram;mothbeans;pigeonpeas,N-fixing pulse; rotate to a cereal or fibre crop. Avoid same-family pulses next.
+mothbeans,Fabaceae,Kharif,nitrogen_fixer,maize;cotton,mothbeans;chickpea;lentil;mungbean;blackgram;kidneybeans;pigeonpeas,Drought-tolerant pulse; follow with a feeder crop. Avoid pulse-after-pulse.
+pigeonpeas,Fabaceae,Kharif,nitrogen_fixer,maize;rice;cotton,pigeonpeas;chickpea;lentil;mungbean;blackgram;kidneybeans;mothbeans,Deep-rooted legume; good before cereals. Avoid back-to-back legumes.
+watermelon,Cucurbitaceae,Kharif,moderate_feeder,chickpea;mungbean;maize,watermelon;muskmelon,Cucurbit; rotate away from melons to break disease cycles.
+muskmelon,Cucurbitaceae,Kharif,moderate_feeder,chickpea;mungbean;maize,muskmelon;watermelon,Cucurbit; avoid following with another cucurbit (shared pests/disease).
+banana,Musaceae,perennial,heavy_feeder,,banana,Perennial (1-2+ years); intercrop early with short legumes for nitrogen. Not annually rotated.
+papaya,Caricaceae,perennial,moderate_feeder,,papaya,Short-lived perennial; replant gap of a season and rotate out before replanting papaya.
 pomegranate,Lythraceae,perennial,light_feeder,,pomegranate,"Long-lived orchard crop; manage via intercropping, not annual rotation."
-mango,Anacardiaceae,perennial,light_feeder,,mango,"Orchard tree; intercrop with legumes/vegetables in the early years."
-grapes,Vitaceae,perennial,moderate_feeder,,grapes,"Perennial vine; use legume cover crops between rows for soil health."
-apple,Rosaceae,perennial,moderate_feeder,,apple,"Orchard tree; avoid apple-replant on the same site without a break (replant disease)."
-orange,Rutaceae,perennial,moderate_feeder,,orange,"Citrus orchard; intercrop legumes in early years; not annually rotated."
-coconut,Arecaceae,perennial,light_feeder,,coconut,"Palm occupying land for decades; intercrop with pulses/banana."
-coffee,Rubiaceae,perennial,moderate_feeder,,coffee,"Shade-grown perennial; intercrop with legume shade trees for nitrogen."
+mango,Anacardiaceae,perennial,light_feeder,,mango,Orchard tree; intercrop with legumes/vegetables in the early years.
+grapes,Vitaceae,perennial,moderate_feeder,,grapes,Perennial vine; use legume cover crops between rows for soil health.
+apple,Rosaceae,perennial,moderate_feeder,,apple,Orchard tree; avoid apple-replant on the same site without a break (replant disease).
+orange,Rutaceae,perennial,moderate_feeder,,orange,Citrus orchard; intercrop legumes in early years; not annually rotated.
+coconut,Arecaceae,perennial,light_feeder,,coconut,Palm occupying land for decades; intercrop with pulses/banana.

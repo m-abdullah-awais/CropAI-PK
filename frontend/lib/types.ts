@@ -30,6 +30,10 @@ export interface YieldResponse {
   yield_hg_per_ha?: number | null;
   yield_kg_per_ha?: number | null;
   yield_t_per_ha?: number | null;
+  is_forecast?: boolean | null;
+  trend_per_year?: number | null;
+  trend_direction?: "rising" | "falling" | "stable" | null;
+  last_real_year?: number | null;
   extrapolation_warning?: string | null;
   model_version?: string | null;
   message?: string | null;

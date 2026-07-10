@@ -19,10 +19,13 @@ def main() -> None:
         f"top3={reco['top3_accuracy']}"
     )
 
-    print("Training yield regressor (real crop+year data)...")
+    print("Training yield trend model (real data)...")
     yld = train_yield()
     merge_metrics("yield", yld)
-    print(f"  r2={yld['r2']} rmse={yld['rmse_hg_ha']} hg/ha")
+    print(
+        f"  {yld['n_crops']} crops, forecast MAE={yld['forecast_mae_t_ha']} t/ha "
+        f"over {yld['backtest_horizon_years']}y"
+    )
 
     print("\nDone. Artifacts + metrics written to models/.")
 

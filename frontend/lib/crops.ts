@@ -8,18 +8,22 @@ export interface CropDef {
   rotationAvailable: boolean;
 }
 
-// 22 recommendation / rotation crops (real dataset labels).
+// 21 recommendation / rotation crops (coffee dropped - not grown in Pakistan).
 const RECO_CROPS = [
   "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
   "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
   "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
-  "apple", "orange", "coconut", "coffee",
+  "apple", "orange", "coconut",
 ];
 
-// 13 crops with real FAO/OWID yield data (canonical slugs).
+// 31 crops with real yield data. Covers ALL 21 recommendation crops + 10 yield-only.
 const YIELD_CROPS = new Set([
-  "wheat", "rice", "maize", "potato", "soybean", "sorghum",
-  "sweet_potato", "sugarcane", "barley", "rapeseed", "beans", "peas", "tomato",
+  "rice", "maize", "cotton", "jute", "chickpea", "lentil", "mungbean",
+  "blackgram", "kidneybeans", "mothbeans", "pigeonpeas", "watermelon",
+  "muskmelon", "banana", "papaya", "pomegranate", "mango", "grapes",
+  "apple", "orange", "coconut",
+  "wheat", "potato", "soybean", "sorghum", "sweet_potato", "sugarcane",
+  "barley", "rapeseed", "peas", "tomato",
 ]);
 
 const DISPLAY_OVERRIDES: Record<string, string> = {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Sprout, TrendingUp } from "lucide-react";
+import { AlertTriangle, Sprout, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -46,9 +46,12 @@ export function YieldResult({ data }: { data: YieldResponse }) {
   return (
     <Card className="animate-fade-in-up overflow-hidden">
       <CardContent className="p-6">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           <TrendingUp className="size-4 text-primary" />
           {t.yield.yieldFor} {display} ({data.year})
+          <Badge variant={data.is_forecast ? "warning" : "success"}>
+            {data.is_forecast ? t.yield.forecast : t.yield.recorded}
+          </Badge>
         </div>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-4xl font-bold tracking-tight">
@@ -59,6 +62,23 @@ export function YieldResult({ data }: { data: YieldResponse }) {
         <p className="mt-1 text-sm text-muted-foreground">
           ≈ {formatNumber(data.yield_kg_per_ha ?? 0)} kg/ha
         </p>
+
+        {data.trend_direction && (
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-secondary/60 px-2.5 py-1.5 text-xs">
+            {data.trend_direction === "rising" ? (
+              <TrendingUp className="size-3.5 text-primary" />
+            ) : data.trend_direction === "falling" ? (
+              <TrendingDown className="size-3.5 text-destructive" />
+            ) : (
+              <Minus className="size-3.5 text-muted-foreground" />
+            )}
+            <span className="font-medium">{t.yield.trendLabel}:</span>
+            <span className="text-muted-foreground">
+              {t.yield[data.trend_direction]} {Math.abs(data.trend_per_year ?? 0)}{" "}
+              {t.yield.perYear}
+            </span>
+          </div>
+        )}
 
         {data.extrapolation_warning && (
           <p className="mt-4 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-foreground">

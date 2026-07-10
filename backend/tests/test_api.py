@@ -20,8 +20,8 @@ def client():
 def test_health(client):
     body = client.get("/health").json()
     assert body["models_loaded"] is True
-    assert body["n_crops_recommendation"] == 22
-    assert body["n_crops_yield"] == 13
+    assert body["n_crops_recommendation"] == 21
+    assert body["n_crops_yield"] == 31
 
 
 def test_recommend_returns_ranked_crops(client):
@@ -43,10 +43,18 @@ def test_yield_available_crop(client):
     body = client.post("/api/yield", json={"crop": "wheat", "year": 2024}).json()
     assert body["available"] is True
     assert body["yield_t_per_ha"] > 0
+    assert body["is_forecast"] is False  # 2024 is real data
+
+
+def test_yield_future_is_trend_forecast(client):
+    body = client.post("/api/yield", json={"crop": "wheat", "year": 2030}).json()
+    assert body["available"] is True
+    assert body["is_forecast"] is True
+    assert body["trend_direction"] in {"rising", "falling", "stable"}
 
 
 def test_yield_unavailable_crop_is_graceful(client):
-    r = client.post("/api/yield", json={"crop": "cotton", "year": 2024})
+    r = client.post("/api/yield", json={"crop": "coffee", "year": 2024})
     assert r.status_code == 200
     assert r.json()["available"] is False
 

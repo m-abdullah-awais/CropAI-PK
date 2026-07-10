@@ -13,8 +13,8 @@ from app.ml.data_loaders import load_rotation
 
 
 def test_crop_set_sizes():
-    assert len(RECO_CROPS) == 22
-    assert len(YIELD_AVAILABLE) == 13
+    assert len(RECO_CROPS) == 21
+    assert len(YIELD_AVAILABLE) == 31
 
 
 def test_every_reco_crop_has_a_rotation_row():
@@ -22,11 +22,15 @@ def test_every_reco_crop_has_a_rotation_row():
     assert set(RECO_CROPS) == rotation_crops == ROTATION_AVAILABLE
 
 
-def test_yield_availability():
-    assert yield_available("wheat")
-    assert yield_available("sugarcane")
-    assert not yield_available("coffee")   # in recommendation, not yield
-    assert not yield_available("apple")
+def test_every_recommendation_crop_has_yield():
+    # Core guarantee: recommend -> predict yield works for every recommended crop.
+    for c in RECO_CROPS:
+        assert yield_available(c), c
+
+
+def test_coffee_removed():
+    assert "coffee" not in RECO_CROPS       # not grown commercially in Pakistan
+    assert not yield_available("coffee")
 
 
 def test_normalize_aliases():

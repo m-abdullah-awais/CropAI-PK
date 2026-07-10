@@ -17,6 +17,10 @@ class YieldResponse(BaseModel):
     yield_hg_per_ha: float | None = None
     yield_kg_per_ha: float | None = None
     yield_t_per_ha: float | None = None
+    is_forecast: bool | None = None
+    trend_per_year: float | None = None
+    trend_direction: str | None = None  # rising | falling | stable
+    last_real_year: int | None = None
     extrapolation_warning: str | None = None
     model_version: str | None = None
     # Present when NOT available:
