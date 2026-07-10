@@ -572,5 +572,17 @@
       "watermelon",
       "wheat"
     ]
+  },
+  "rotation": {
+    "model": "Projected soil -> recommendation KNN, blended with agronomy facts",
+    "data": "real recommendation dataset (KNN) + curated agronomy facts",
+    "n_crops": 21,
+    "n_rotatable": 13,
+    "n_perennial": 8,
+    "top_n": 4,
+    "self_recommended": 0,
+    "same_family_in_top": 0,
+    "legume_after_feeder_rate": 1.0,
+    "mean_top1_soil_suitability": 0.9224
   }
 }

@@ -66,10 +66,39 @@ def test_yield_history(client):
 
 
 def test_rotation_known_crop(client):
-    body = client.get("/api/rotation/rice").json()
+    body = client.post("/api/rotation", json={"current_crop": "rice"}).json()
     assert body["season"] == "Kharif"
-    assert len(body["recommended_next"]) > 0
+    assert body["is_perennial"] is False
+    # Soil was left blank, so it is seeded from the crop's real average profile.
+    assert body["projected_soil"]["soil_estimated"] is True
+    assert len(body["next_crops"]) > 0
+    # A heavy feeder like rice must not be followed by itself or a same-family grass.
+    next_slugs = [c["crop"] for c in body["next_crops"]]
+    assert "rice" not in next_slugs
+    assert "maize" not in next_slugs  # same family (Poaceae) -> excluded
+
+
+def test_rotation_heavy_feeder_prefers_legume(client):
+    body = client.post("/api/rotation", json={"current_crop": "rice"}).json()
+    assert body["next_crops"][0]["nitrogen_role"] == "nitrogen_fixer"
+
+
+def test_rotation_respects_provided_soil(client):
+    body = client.post(
+        "/api/rotation",
+        json={"current_crop": "cotton", "N": 60, "P": 40, "K": 45,
+              "temperature": 26, "humidity": 70, "ph": 6.8, "rainfall": 120},
+    ).json()
+    assert body["projected_soil"]["soil_estimated"] is False
+    assert len(body["next_crops"]) > 0
+
+
+def test_rotation_perennial_has_no_successor(client):
+    body = client.post("/api/rotation", json={"current_crop": "mango"}).json()
+    assert body["is_perennial"] is True
+    assert body["next_crops"] == []
 
 
 def test_rotation_unknown_crop_404(client):
-    assert client.get("/api/rotation/zucchini").status_code == 404
+    r = client.post("/api/rotation", json={"current_crop": "zucchini"})
+    assert r.status_code == 404

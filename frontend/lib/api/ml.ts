@@ -26,6 +26,18 @@ export interface YieldInput {
   year: number;
 }
 
+export interface RotationInput {
+  current_crop: string;
+  N?: number;
+  P?: number;
+  K?: number;
+  temperature?: number;
+  humidity?: number;
+  ph?: number;
+  rainfall?: number;
+  top_n?: number;
+}
+
 export function getHealth(): Promise<HealthResponse> {
   return apiFetch<HealthResponse>("/api/ml/health");
 }
@@ -54,10 +66,11 @@ export function getYieldHistory(crop: string): Promise<YieldHistoryResponse> {
   );
 }
 
-export function getRotation(crop: string): Promise<RotationResponse> {
-  return apiFetch<RotationResponse>(
-    `/api/ml/rotation?crop=${encodeURIComponent(crop)}`,
-  );
+export function planRotation(input: RotationInput): Promise<RotationResponse> {
+  return apiFetch<RotationResponse>("/api/ml/rotation", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export function getWeather(location: string): Promise<WeatherResponse> {

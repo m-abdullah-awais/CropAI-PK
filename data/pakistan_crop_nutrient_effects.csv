@@ -1,0 +1,5 @@
+nitrogen_role,delta_n,delta_p,delta_k,description
+nitrogen_fixer,25,-5,-8,Legumes fix atmospheric nitrogen and leave a positive residual N in the soil for the next crop; they draw modest phosphorus and potassium.
+heavy_feeder,-35,-8,-18,Cereals and cotton are heavy feeders that strongly deplete soil nitrogen and remove substantial potassium at harvest.
+moderate_feeder,-18,-5,-10,Fibre and cucurbit crops draw a moderate amount of nitrogen and potassium from the soil.
+light_feeder,-8,-3,-5,Light feeders make small demands on soil nutrients over a season.

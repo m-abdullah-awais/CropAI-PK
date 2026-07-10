@@ -7,7 +7,7 @@ is its own model/engine, chained in the application layer.
 |---------------------|-----------------------------------|-------------------|-------------|
 | Crop recommendation | `pakistan_crop_recommendation.csv`| ML classification | Kaggle/ICFA crop-recommendation dataset |
 | Crop yield          | `pakistan_yield_real.csv`         | ML regression     | FAO / Our World in Data |
-| Crop rotation       | `pakistan_crop_rotation_rules.csv`| rules lookup      | curated agronomy (facts, not measurements) |
+| Crop rotation       | `pakistan_crop_rotation_rules.csv` + `pakistan_crop_nutrient_effects.csv`| ML (projected soil -> KNN) + agronomy | recommendation KNN + curated agronomy facts |
 
 ---
 
@@ -47,13 +47,36 @@ Columns: `N, P, K, temperature(C), humidity(%), ph, rainfall(mm), label`.
 - Rebuild by downloading the FAOSTAT QCL bulk and filtering Pakistan yields (see the
   script under the project scratchpad, or re-run the documented extraction).
 
-## 3. pakistan_crop_rotation_rules.csv - rotation (rules)
+## 3. Crop rotation - ML-driven (projected soil -> recommendation KNN + agronomy)
 
-Curated agronomic rules for the **same 21 crops**. Columns: `crop, family,
-season(Kharif/Rabi/perennial), nitrogen_role, recommended_next(;-sep),
-avoid_next(;-sep), notes`. This is established agronomy (botanical families,
-nitrogen fixing, perennial handling), not fabricated measurements - there is no
-public ML dataset for crop rotation. Perennials have no annual successor (see notes).
+Rotation is **not** a static lookup any more, and there is still **no public real
+rotation dataset** (only synthetic, rule-generated ones, which our real-data rule
+forbids). Instead the next-crop ranking is produced by a real model:
+
+1. Start from the field's soil/climate state (the farmer's real soil test, or the
+   current crop's average profile from the recommendation dataset when left blank).
+2. **Project the soil forward** by the current crop's real agronomic nutrient effect
+   (a legume leaves residual N; a cereal/cotton depletes N and K, etc).
+3. **Score every candidate crop** on that projected soil with the trained
+   recommendation **KNN** (`recommendation.joblib`) - the same real 2,100-row model.
+4. **Blend** the soil-suitability score with real agronomy facts: exclude/penalise the
+   same botanical family and documented `avoid_next` crops, boost a legume after a
+   heavy feeder (nitrogen break), and drop perennials as a "next" crop.
+
+Two supporting fact tables (agronomy, not fabricated measurements):
+
+- **`pakistan_crop_rotation_rules.csv`** - the **same 21 crops**. Columns: `crop,
+  family, season(Kharif/Rabi/perennial), nitrogen_role, recommended_next(;-sep),
+  avoid_next(;-sep), notes`. Botanical families, nitrogen fixing and perennial
+  handling. `recommended_next`/`avoid_next` seed the agronomy blend and the avoid list.
+- **`pakistan_crop_nutrient_effects.csv`** - the soil nutrient delta a crop leaves for
+  the next crop, keyed by `nitrogen_role`. Columns: `nitrogen_role, delta_n, delta_p,
+  delta_k, description`. Real published direction/magnitude (legume +N residual;
+  heavy feeder -N -K), used for the soil projection in step 2.
+
+The trained artifact `models/rotation.joblib` bundles each crop's average soil profile,
+the nutrient-effect table and the observed feature ranges, built by
+`training/train_rotation.py`. Perennials have no annual successor (see notes).
 
 ---
 

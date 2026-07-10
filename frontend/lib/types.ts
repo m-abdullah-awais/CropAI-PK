@@ -72,11 +72,31 @@ export interface YieldHistoryResponse {
   series: YieldHistoryPoint[];
 }
 
+export interface ProjectedSoil {
+  N: number;
+  P: number;
+  K: number;
+  temperature: number;
+  humidity: number;
+  ph: number;
+  rainfall: number;
+  soil_estimated: boolean;
+}
+
 export interface NextCrop {
   crop: string;
   display: string;
-  nitrogen_role?: string | null;
+  score: number; // blended rank score, 0..1
+  soil_suitability: number; // KNN soil-match on the projected soil, 0..1
+  nitrogen_role: string;
+  note: "nitrogen_break" | "soil_match";
   yield_available: boolean;
+}
+
+export interface AvoidCrop {
+  crop: string;
+  display: string;
+  reason: "same_family" | "avoid_pair";
 }
 
 export interface RotationResponse {
@@ -85,9 +105,12 @@ export interface RotationResponse {
   family: string;
   season: string;
   nitrogen_role: string;
-  recommended_next: NextCrop[];
-  avoid_next: NextCrop[];
+  is_perennial: boolean;
+  projected_soil: ProjectedSoil;
+  next_crops: NextCrop[];
+  avoid: AvoidCrop[];
   notes: string;
+  model_version: string;
 }
 
 export interface WeatherResponse {

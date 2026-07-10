@@ -25,3 +25,9 @@ def load_yield() -> pd.DataFrame:
 
 def load_rotation() -> pd.DataFrame:
     return _read(settings.data_dir / "pakistan_crop_rotation_rules.csv")
+
+
+def load_nutrient_effects() -> pd.DataFrame:
+    """Real published agronomic nutrient effect of a crop on the soil, keyed by
+    nitrogen_role: how much N/P/K it leaves or removes for the next crop."""
+    return _read(settings.data_dir / "pakistan_crop_nutrient_effects.csv")

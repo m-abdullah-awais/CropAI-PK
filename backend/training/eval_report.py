@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from training._metrics import merge_metrics
 from training.train_recommendation import train as train_reco
+from training.train_rotation import train as train_rotation
 from training.train_yield import train as train_yield
 
 
@@ -25,6 +26,15 @@ def main() -> None:
     print(
         f"  {yld['n_crops']} crops, forecast MAE={yld['forecast_mae_t_ha']} t/ha "
         f"over {yld['backtest_horizon_years']}y"
+    )
+
+    # Rotation reuses the reco KNN, so train it after recommendation.joblib exists.
+    print("Training rotation model (projected soil -> KNN + agronomy)...")
+    rot = train_rotation()
+    merge_metrics("rotation", rot)
+    print(
+        f"  {rot['n_crops']} crops ({rot['n_rotatable']} rotatable), "
+        f"legume-after-feeder={rot.get('legume_after_feeder_rate')}"
     )
 
     print("\nDone. Artifacts + metrics written to models/.")
