@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Sprout } from "lucide-react";
+import { PageShell } from "@/components/common/page-shell";
 import { PageHeader } from "@/components/common/page-header";
 import { ResultEmpty } from "@/components/common/result-empty";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,8 +18,9 @@ export default function RecommendPage() {
   const t = useT();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <PageShell>
       <PageHeader
+        accent="recommend"
         icon={Sprout}
         title={t.recommend.title}
         description={t.recommend.desc}
@@ -26,12 +28,9 @@ export default function RecommendPage() {
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <Card>
-            <CardContent className="p-6">
-              <RecommendForm
-                onResult={setResult}
-                onLoadingChange={setLoading}
-              />
+          <Card className="lg:sticky lg:top-20">
+            <CardContent className="p-5 sm:p-6">
+              <RecommendForm onResult={setResult} onLoadingChange={setLoading} />
             </CardContent>
           </Card>
         </div>
@@ -43,6 +42,7 @@ export default function RecommendPage() {
             <RecommendResults data={result} />
           ) : (
             <ResultEmpty
+              accent="recommend"
               icon={Sprout}
               title={t.recommend.empty}
               description={t.recommend.emptyDesc}
@@ -50,6 +50,6 @@ export default function RecommendPage() {
           )}
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

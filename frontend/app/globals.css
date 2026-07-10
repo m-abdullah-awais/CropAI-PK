@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 /* Dark mode driven by a `.dark` class on <html> (next-themes). */
 @custom-variant dark (&:is(.dark *));
@@ -39,6 +40,20 @@
   --chart-3: hsl(168 40% 38%);
   --chart-4: hsl(95 40% 45%);
   --chart-5: hsl(20 60% 50%);
+
+  /* Per-tool identity accents (contrast-tuned to read as both fill and text). */
+  --tool-recommend: hsl(142 44% 30%);
+  --tool-yield: hsl(174 45% 30%);
+  --tool-rotation: hsl(30 62% 38%);
+
+  /* Soil-horizon signature: layered earth strata + green surface line. */
+  --earth-1: hsl(28 34% 24%);
+  --earth-2: hsl(30 46% 40%);
+  --earth-3: hsl(36 40% 66%);
+  --earth-line: hsl(142 44% 34%);
+
+  /* Green-black shadow tint feeding the elevation system. */
+  --shadow-color: 140 24% 12%;
 }
 
 .dark {
@@ -75,6 +90,17 @@
   --chart-3: hsl(168 44% 50%);
   --chart-4: hsl(95 44% 55%);
   --chart-5: hsl(20 64% 58%);
+
+  --tool-recommend: hsl(142 48% 52%);
+  --tool-yield: hsl(174 50% 52%);
+  --tool-rotation: hsl(34 78% 58%);
+
+  --earth-1: hsl(28 28% 16%);
+  --earth-2: hsl(30 36% 28%);
+  --earth-3: hsl(36 24% 42%);
+  --earth-line: hsl(142 48% 50%);
+
+  --shadow-color: 150 60% 2%;
 }
 
 @theme inline {
@@ -108,8 +134,25 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
+  --color-tool-recommend: var(--tool-recommend);
+  --color-tool-yield: var(--tool-yield);
+  --color-tool-rotation: var(--tool-rotation);
+  --color-earth-1: var(--earth-1);
+  --color-earth-2: var(--earth-2);
+  --color-earth-3: var(--earth-3);
+  --color-earth-line: var(--earth-line);
+
+  --shadow-e1: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06);
+  --shadow-e2:
+    0 2px 6px -1px hsl(var(--shadow-color) / 0.08),
+    0 8px 20px -6px hsl(var(--shadow-color) / 0.06);
+  --shadow-e3:
+    0 10px 30px -8px hsl(var(--shadow-color) / 0.14),
+    0 4px 10px -4px hsl(var(--shadow-color) / 0.08);
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -136,12 +179,15 @@ body {
   .animate-fade-in-up { animation: none; }
 }
 
-/* Script-specific fonts by active language (set on <html lang>). */
+/* Script-specific fonts by active language (set on <html lang>). Display headings
+   fall back to the script font for ur/hi so Fraunces never renders those scripts. */
 html[lang="ur"] {
   --font-sans: var(--font-urdu), var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --font-display: var(--font-urdu), var(--font-fraunces), ui-serif, serif;
 }
 html[lang="hi"] {
   --font-sans: var(--font-hindi), var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --font-display: var(--font-hindi), var(--font-fraunces), ui-serif, serif;
 }
 html[lang="ur"] body {
   line-height: 1.85;

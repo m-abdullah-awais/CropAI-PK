@@ -74,7 +74,7 @@ export function RecommendForm({
       const res = await recommend({ ...parsed.data, top_n: 3 });
       onResult(res);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Recommendation failed.");
+      toast.error(err instanceof Error ? err.message : t.common.error);
     } finally {
       setSubmitting(false);
       onLoadingChange(false);
@@ -92,7 +92,7 @@ export function RecommendForm({
       />
 
       <fieldset className="space-y-3">
-        <legend className="text-sm font-semibold text-muted-foreground">
+        <legend className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {t.recommend.soil}
         </legend>
         <div className="grid grid-cols-2 gap-3">
@@ -110,7 +110,7 @@ export function RecommendForm({
       </fieldset>
 
       <fieldset className="space-y-3">
-        <legend className="text-sm font-semibold text-muted-foreground">
+        <legend className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {t.recommend.climate}
         </legend>
         <div className="grid grid-cols-3 gap-3">
@@ -150,7 +150,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between gap-2">
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
         <Label>{label}</Label>
         <span className="text-[11px] text-muted-foreground">{hint}</span>
       </div>
@@ -159,6 +159,7 @@ function Field({
         step="any"
         inputMode="decimal"
         value={value}
+        aria-invalid={error ? true : undefined}
         onChange={(e) => onChange(e.target.value)}
       />
       {error && <p className="text-xs text-destructive">{error}</p>}

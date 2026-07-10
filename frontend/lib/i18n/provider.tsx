@@ -19,9 +19,11 @@ const VALID: Lang[] = ["en", "ur", "hi"];
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = React.useState<Lang>("en");
 
-  // Restore saved language on mount.
+  // Restore saved language on mount. localStorage is unavailable during SSR, so this
+  // one-time read has to happen in an effect rather than in the initial state.
   React.useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saved && VALID.includes(saved)) setLangState(saved);
   }, []);
 

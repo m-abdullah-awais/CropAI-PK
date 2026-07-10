@@ -11,7 +11,7 @@ export const LANGUAGES: { code: Lang; label: string; native: string; dir: "ltr" 
 
 export const dict = {
   en: {
-    nav: { dashboard: "Dashboard", recommend: "Recommend", yield: "Yield", rotation: "Rotation" },
+    nav: { dashboard: "Dashboard", recommend: "Recommend", yield: "Yield", rotation: "Rotation", menu: "Menu" },
     language: "Language",
     theme: { toggle: "Toggle theme" },
     health: { online: "API online", offline: "API offline", checking: "Checking API" },
@@ -53,6 +53,7 @@ export const dict = {
       noYield: "Yield not available for this crop",
       exploreRotation: "Explore all rotation plans",
       topCrops: "Top crops for your soil and climate",
+      bestMatch: "Best match",
       confidence: { high: "High confidence", medium: "Medium confidence", low: "Low confidence" },
       fields: {
         N: "Nitrogen (N)", P: "Phosphorus (P)", K: "Potassium (K)", ph: "Soil pH",
@@ -69,7 +70,7 @@ export const dict = {
       title: "Yield Prediction",
       desc: "Real FAO/OWID yield for Pakistani crops. Pick a crop and year to see the expected yield and its history.",
       crop: "Crop",
-      cropHint: "Real FAO/OWID yield data for 13 Pakistani crops.",
+      cropHint: "Real FAO/OWID yield data for 31 Pakistani crops.",
       year: "Year",
       yearHint: "Real data runs 1961-2024; later years show the latest available.",
       submit: "Predict yield",
@@ -107,14 +108,17 @@ export const dict = {
     },
     footer: {
       tagline: "Crop recommendation, yield prediction, and rotation planning for Pakistan. Built on real datasets - validate against local soil tests before field use.",
-      data: "Data: real crop-recommendation dataset (22 crops) and FAO/OWID yields (1961-2024). Weather: Open-Meteo. For research and educational use.",
+      data: "Data: real crop-recommendation dataset (21 crops) and FAO/OWID yields (1961-2024). Weather: Open-Meteo. For research and educational use.",
       madeBy: "Built by",
+      tools: "Tools",
+      dataSources: "Data and sources",
+      about: "About",
     },
     selectCrop: "Select a crop",
   },
 
   ur: {
-    nav: { dashboard: "ڈیش بورڈ", recommend: "سفارش", yield: "پیداوار", rotation: "فصل کی تبدیلی" },
+    nav: { dashboard: "ڈیش بورڈ", recommend: "سفارش", yield: "پیداوار", rotation: "فصل کی تبدیلی", menu: "مینو" },
     language: "زبان",
     theme: { toggle: "تھیم تبدیل کریں" },
     health: { online: "سرور فعال", offline: "سرور بند", checking: "جانچ جاری" },
@@ -156,6 +160,7 @@ export const dict = {
       noYield: "اس فصل کے لیے پیداوار دستیاب نہیں",
       exploreRotation: "تمام تبدیلی منصوبے دیکھیں",
       topCrops: "آپ کی مٹی اور موسم کے لیے بہترین فصلیں",
+      bestMatch: "بہترین انتخاب",
       confidence: { high: "زیادہ اعتماد", medium: "درمیانہ اعتماد", low: "کم اعتماد" },
       fields: {
         N: "نائٹروجن (N)", P: "فاسفورس (P)", K: "پوٹاشیم (K)", ph: "مٹی کا پی ایچ",
@@ -172,7 +177,7 @@ export const dict = {
       title: "پیداوار کی پیش گوئی",
       desc: "پاکستانی فصلوں کے لیے ایف اے او/او ڈبلیو آئی ڈی کی حقیقی پیداوار۔ فصل اور سال منتخب کریں۔",
       crop: "فصل",
-      cropHint: "13 پاکستانی فصلوں کے لیے حقیقی ایف اے او/او ڈبلیو آئی ڈی پیداوار۔",
+      cropHint: "31 پاکستانی فصلوں کے لیے حقیقی ایف اے او/او ڈبلیو آئی ڈی پیداوار۔",
       year: "سال",
       yearHint: "حقیقی اعداد و شمار 1961-2024؛ بعد کے سال تازہ ترین دستیاب دکھاتے ہیں۔",
       submit: "پیداوار کا اندازہ",
@@ -210,14 +215,17 @@ export const dict = {
     },
     footer: {
       tagline: "پاکستان کے لیے فصل کی سفارش، پیداوار کی پیش گوئی اور فصل کی تبدیلی۔ حقیقی ڈیٹا پر مبنی - کھیت میں استعمال سے پہلے مقامی جانچ سے تصدیق کریں۔",
-      data: "ڈیٹا: حقیقی فصل سفارش ڈیٹاسیٹ (22 فصلیں) اور ایف اے او/او ڈبلیو آئی ڈی پیداوار (1961-2024)۔ موسم: اوپن میٹیو۔ تحقیقی و تعلیمی استعمال کے لیے۔",
+      data: "ڈیٹا: حقیقی فصل سفارش ڈیٹاسیٹ (21 فصلیں) اور ایف اے او/او ڈبلیو آئی ڈی پیداوار (1961-2024)۔ موسم: اوپن میٹیو۔ تحقیقی و تعلیمی استعمال کے لیے۔",
       madeBy: "تیار کردہ",
+      tools: "ٹولز",
+      dataSources: "ڈیٹا اور ذرائع",
+      about: "بارے میں",
     },
     selectCrop: "فصل منتخب کریں",
   },
 
   hi: {
-    nav: { dashboard: "डैशबोर्ड", recommend: "सिफ़ारिश", yield: "पैदावार", rotation: "फ़सल चक्र" },
+    nav: { dashboard: "डैशबोर्ड", recommend: "सिफ़ारिश", yield: "पैदावार", rotation: "फ़सल चक्र", menu: "मेन्यू" },
     language: "भाषा",
     theme: { toggle: "थीम बदलें" },
     health: { online: "सर्वर चालू", offline: "सर्वर बंद", checking: "जाँच जारी" },
@@ -259,6 +267,7 @@ export const dict = {
       noYield: "इस फ़सल के लिए पैदावार उपलब्ध नहीं",
       exploreRotation: "सभी चक्र योजनाएँ देखें",
       topCrops: "आपकी मिट्टी और जलवायु के लिए सर्वोत्तम फ़सलें",
+      bestMatch: "सर्वोत्तम मिलान",
       confidence: { high: "उच्च विश्वास", medium: "मध्यम विश्वास", low: "कम विश्वास" },
       fields: {
         N: "नाइट्रोजन (N)", P: "फॉस्फोरस (P)", K: "पोटैशियम (K)", ph: "मिट्टी pH",
@@ -275,7 +284,7 @@ export const dict = {
       title: "पैदावार अनुमान",
       desc: "पाकिस्तानी फ़सलों के लिए वास्तविक एफएओ/OWID पैदावार। फ़सल और वर्ष चुनें।",
       crop: "फ़सल",
-      cropHint: "13 पाकिस्तानी फ़सलों के लिए वास्तविक एफएओ/OWID पैदावार डेटा।",
+      cropHint: "31 पाकिस्तानी फ़सलों के लिए वास्तविक एफएओ/OWID पैदावार डेटा।",
       year: "वर्ष",
       yearHint: "वास्तविक डेटा 1961-2024; बाद के वर्ष नवीनतम उपलब्ध दिखाते हैं।",
       submit: "पैदावार का अनुमान",
@@ -313,8 +322,11 @@ export const dict = {
     },
     footer: {
       tagline: "पाकिस्तान के लिए फ़सल सिफ़ारिश, पैदावार अनुमान और फ़सल चक्र। वास्तविक डेटा पर आधारित - खेत में उपयोग से पहले स्थानीय जाँच से सत्यापित करें।",
-      data: "डेटा: वास्तविक फ़सल-सिफ़ारिश डेटासेट (22 फ़सलें) और एफएओ/OWID पैदावार (1961-2024)। मौसम: ओपन-मेटियो। शोध और शैक्षिक उपयोग हेतु।",
+      data: "डेटा: वास्तविक फ़सल-सिफ़ारिश डेटासेट (21 फ़सलें) और एफएओ/OWID पैदावार (1961-2024)। मौसम: ओपन-मेटियो। शोध और शैक्षिक उपयोग हेतु।",
       madeBy: "निर्माता",
+      tools: "उपकरण",
+      dataSources: "डेटा और स्रोत",
+      about: "परिचय",
     },
     selectCrop: "फ़सल चुनें",
   },

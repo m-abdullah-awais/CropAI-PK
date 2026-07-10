@@ -1,11 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { CloudSun, Loader2, MapPin } from "lucide-react";
+import { CheckCircle2, CloudSun, Info, Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { getWeather } from "@/lib/api/ml";
 import type { WeatherResponse } from "@/lib/types";
 import { useT } from "@/lib/i18n/provider";
@@ -17,17 +22,17 @@ export function WeatherAutofill({
 }) {
   const [location, setLocation] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [note, setNote] = React.useState<string | null>(null);
+  const [filled, setFilled] = React.useState<string | null>(null);
   const t = useT();
 
   async function fetchWeather() {
     if (!location.trim()) return;
     setLoading(true);
-    setNote(null);
+    setFilled(null);
     try {
       const w = await getWeather(location);
       onResult(w);
-      setNote(`${w.location} - ${t.recommend.rainfallNote}`);
+      setFilled(w.location);
       toast.success(w.location);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t.recommend.weatherError);
@@ -37,10 +42,26 @@ export function WeatherAutofill({
   }
 
   return (
-    <div className="rounded-lg border bg-secondary/30 p-4">
-      <Label htmlFor="location" className="flex items-center gap-1.5">
-        <MapPin className="size-4 text-primary" /> {t.recommend.location}
-      </Label>
+    <div className="rounded-lg border border-tool-recommend/20 bg-tool-recommend/6 p-4">
+      <div className="flex items-center justify-between gap-2">
+        <Label htmlFor="location" className="flex items-center gap-1.5">
+          <MapPin className="size-4 text-tool-recommend" /> {t.recommend.location}
+        </Label>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={t.recommend.rainfallNote}
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Info className="size-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs">
+            {t.recommend.rainfallNote}
+          </TooltipContent>
+        </Tooltip>
+      </div>
       <div className="mt-2 flex gap-2">
         <Input
           id="location"
@@ -64,7 +85,11 @@ export function WeatherAutofill({
           {loading ? t.recommend.fetching : t.recommend.fetch}
         </Button>
       </div>
-      {note && <p className="mt-2 text-xs text-muted-foreground">{note}</p>}
+      {filled && (
+        <p className="mt-2 flex items-center gap-1.5 text-xs text-tool-recommend">
+          <CheckCircle2 className="size-3.5" /> {filled}
+        </p>
+      )}
     </div>
   );
 }

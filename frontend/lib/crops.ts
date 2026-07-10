@@ -1,5 +1,5 @@
 // Canonical crop registry - mirrors backend app/crops.py.
-// Recommendation/rotation = 22 real crops; yield = 9 real crops.
+// Recommendation/rotation = 21 real crops; yield = 31 real crops.
 
 export interface CropDef {
   slug: string;

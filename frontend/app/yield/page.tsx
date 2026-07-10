@@ -5,9 +5,16 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { LineChart } from "lucide-react";
 import { toast } from "sonner";
+import { PageShell } from "@/components/common/page-shell";
 import { PageHeader } from "@/components/common/page-header";
 import { ResultEmpty } from "@/components/common/result-empty";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { YieldForm } from "@/components/yield/yield-form";
 import { YieldResult } from "@/components/yield/yield-result";
@@ -17,13 +24,32 @@ import type { YieldForm as FormValues } from "@/lib/schemas/yield";
 import type { YieldHistoryResponse, YieldResponse } from "@/lib/types";
 import { useI18n } from "@/lib/i18n/provider";
 
+function YieldSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <span aria-hidden className="block h-1 bg-muted" />
+        <CardContent className="space-y-3 p-6">
+          <Skeleton className="h-4 w-48" />
+          <Skeleton className="h-11 w-40" />
+          <Skeleton className="h-7 w-56" />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="space-y-3 p-6">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-56 w-full" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function YieldInner() {
   const { t, tCrop } = useI18n();
   const initialCrop = useSearchParams().get("crop") ?? undefined;
   const [result, setResult] = React.useState<YieldResponse | null>(null);
-  const [history, setHistory] = React.useState<YieldHistoryResponse | null>(
-    null,
-  );
+  const [history, setHistory] = React.useState<YieldHistoryResponse | null>(null);
   const [loading, setLoading] = React.useState(false);
 
   async function handleSubmit(values: FormValues) {
@@ -38,7 +64,7 @@ function YieldInner() {
       setResult(pred);
       setHistory(hist);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Yield prediction failed.");
+      toast.error(e instanceof Error ? e.message : t.common.error);
     } finally {
       setLoading(false);
     }
@@ -50,13 +76,18 @@ function YieldInner() {
       : null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <PageHeader icon={LineChart} title={t.yield.title} description={t.yield.desc} />
+    <PageShell>
+      <PageHeader
+        accent="yield"
+        icon={LineChart}
+        title={t.yield.title}
+        description={t.yield.desc}
+      />
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <Card>
-            <CardContent className="p-6">
+          <Card className="lg:sticky lg:top-20">
+            <CardContent className="p-5 sm:p-6">
               <YieldForm
                 initialCrop={initialCrop}
                 onSubmit={handleSubmit}
@@ -68,22 +99,23 @@ function YieldInner() {
 
         <div className="space-y-6 lg:col-span-7">
           {loading ? (
-            <>
-              <Skeleton className="h-40 w-full rounded-xl" />
-              <Skeleton className="h-64 w-full rounded-xl" />
-            </>
+            <YieldSkeleton />
           ) : result ? (
             <>
               <YieldResult data={result} />
               {history?.available && history.series.length > 0 && (
                 <Card>
-                  <CardContent className="p-5">
-                    <p className="mb-3 text-sm font-medium">
-                      {t.yield.history} - {tCrop(history.crop, history.display)}
-                    </p>
+                  <CardHeader>
+                    <CardTitle className="text-base">{t.yield.history}</CardTitle>
+                    <CardDescription>
+                      {tCrop(history.crop, history.display)}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
                     <YieldTrendChart
                       series={history.series}
                       predicted={predictedPoint}
+                      lastRealYear={result.last_real_year}
                     />
                   </CardContent>
                 </Card>
@@ -91,6 +123,7 @@ function YieldInner() {
             </>
           ) : (
             <ResultEmpty
+              accent="yield"
               icon={LineChart}
               title={t.yield.empty}
               description={t.yield.emptyDesc}
@@ -98,7 +131,7 @@ function YieldInner() {
           )}
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { CropSelect } from "@/components/common/crop-select";
 import { YIELD_AVAILABLE_CROPS } from "@/lib/crops";
 import { yieldSchema, type YieldForm as FormValues } from "@/lib/schemas/yield";
+import { useT } from "@/lib/i18n/provider";
 
 export function YieldForm({
   initialCrop,
@@ -18,6 +19,7 @@ export function YieldForm({
   onSubmit: (values: FormValues) => void;
   loading: boolean;
 }) {
+  const t = useT();
   const supported = YIELD_AVAILABLE_CROPS.some((c) => c.slug === initialCrop);
   const [crop, setCrop] = React.useState(
     supported ? initialCrop! : YIELD_AVAILABLE_CROPS[0].slug,
@@ -46,36 +48,35 @@ export function YieldForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-1.5">
-        <Label htmlFor="crop">Crop</Label>
+        <Label htmlFor="crop">{t.yield.crop}</Label>
         <CropSelect
           id="crop"
           crops={YIELD_AVAILABLE_CROPS}
           value={crop}
           onChange={setCrop}
+          placeholder={t.selectCrop}
         />
-        <p className="text-[11px] text-muted-foreground">
-          Real FAO/OWID yield data for 13 Pakistani crops.
-        </p>
+        <p className="text-[11px] text-muted-foreground">{t.yield.cropHint}</p>
       </div>
 
       <div className="space-y-1.5">
-        <Label>Year</Label>
+        <Label htmlFor="year">{t.yield.year}</Label>
         <Input
+          id="year"
           type="number"
           step="1"
           inputMode="numeric"
           value={year}
+          aria-invalid={errors.year ? true : undefined}
           onChange={(e) => setYear(e.target.value)}
         />
         {errors.year && <p className="text-xs text-destructive">{errors.year}</p>}
-        <p className="text-[11px] text-muted-foreground">
-          Real data runs 1961-2024; later years show the latest available.
-        </p>
+        <p className="text-[11px] text-muted-foreground">{t.yield.yearHint}</p>
       </div>
 
       <Button type="submit" size="lg" className="w-full" disabled={loading}>
         {loading ? <Loader2 className="animate-spin" /> : <LineChart />}
-        Predict yield
+        {t.yield.submit}
       </Button>
     </form>
   );
