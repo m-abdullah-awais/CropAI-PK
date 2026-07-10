@@ -2,8 +2,9 @@
 
 FastAPI + scikit-learn service for three capabilities, all on REAL data:
 
-- **Recommendation** - RandomForest classifier on `pakistan_crop_recommendation.csv`
-  (real 22-crop dataset; soil NPK + climate -> crop).
+- **Recommendation** - scaled distance-weighted KNN on `pakistan_crop_recommendation.csv`
+  (real 22-crop dataset; soil NPK + climate -> crop). KNN responds smoothly to every
+  input, unlike RandomForest which mapped large input regions to a single crop.
 - **Yield** - RandomForest regressor on `pakistan_yield_real.csv` (real FAO/OWID yields,
   13 crops, 1961-2024). Inputs `(crop, year)`; no estimated features, no projections.
 - **Rotation** - rules lookup on `pakistan_crop_rotation_rules.csv` (22 crops, curated agronomy).

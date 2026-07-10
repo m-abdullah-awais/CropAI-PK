@@ -1,5 +1,12 @@
 """Train the crop recommendation classifier.
 
+Uses a feature-scaled, distance-weighted K-Nearest-Neighbours model. Why KNN and
+not RandomForest: on this small, well-separated real dataset a RandomForest carves
+chunky, flat decision regions - large areas map to one crop, so changing an input
+(especially pH, which RF weights near zero) often does NOT change the recommendation.
+A scaled distance-weighted KNN responds smoothly and continuously to every feature,
+so the recommendation actually reflects the soil/climate the farmer enters.
+
 Run from backend/:  python -m training.train_recommendation
 """
 
@@ -7,10 +14,11 @@ from __future__ import annotations
 
 import joblib
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 from app.config import settings
 from app.ml.data_loaders import load_recommendation
@@ -24,33 +32,27 @@ def train() -> dict:
     X = df[RECO_FEATURES]
     y = df["label"].astype(str)
 
-    # 70 / 15 / 15 stratified split (val held out for honesty; metrics on test).
-    X_train, X_tmp, y_train, y_tmp = train_test_split(
-        X, y, test_size=0.30, stratify=y, random_state=RANDOM_STATE
-    )
-    X_val, X_test, y_val, y_test = train_test_split(
-        X_tmp, y_tmp, test_size=0.50, stratify=y_tmp, random_state=RANDOM_STATE
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.25, stratify=y, random_state=RANDOM_STATE
     )
 
     pipe = Pipeline([
-        ("rf", RandomForestClassifier(
-            n_estimators=300, n_jobs=-1, random_state=RANDOM_STATE
-        )),
+        ("scaler", StandardScaler()),
+        ("knn", KNeighborsClassifier(n_neighbors=9, weights="distance")),
     ])
     pipe.fit(X_train, y_train)
 
-    # --- Evaluate on the held-out test set ---
+    classes = pipe.classes_
     y_pred = pipe.predict(X_test)
     accuracy = float((y_pred == y_test.to_numpy()).mean())
     macro_f1 = float(f1_score(y_test, y_pred, average="macro"))
 
-    # Top-3 accuracy.
     proba = pipe.predict_proba(X_test)
-    classes = pipe.named_steps["rf"].classes_
     top3_idx = np.argsort(proba, axis=1)[:, -3:]
     top3_labels = classes[top3_idx]
-    top3_hits = [yt in row for yt, row in zip(y_test.to_numpy(), top3_labels)]
-    top3_accuracy = float(np.mean(top3_hits))
+    top3_accuracy = float(
+        np.mean([yt in row for yt, row in zip(y_test.to_numpy(), top3_labels)])
+    )
 
     report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
     cm = confusion_matrix(y_test, y_pred, labels=classes)
@@ -61,8 +63,8 @@ def train() -> dict:
         settings.model_dir / "recommendation.joblib",
     )
 
-    metrics = {
-        "model": "RandomForestClassifier(n_estimators=300)",
+    return {
+        "model": "StandardScaler + KNeighborsClassifier(n_neighbors=9, weights=distance)",
         "n_train": int(len(X_train)),
         "n_test": int(len(X_test)),
         "accuracy": round(accuracy, 4),
@@ -75,11 +77,10 @@ def train() -> dict:
         },
         "confusion": {"labels": list(classes), "matrix": cm.tolist()},
         "note": (
-            "Trained on the real crop-recommendation dataset (22 crops). The classes "
-            "are well separated, so accuracy is high."
+            "Feature-scaled distance-weighted KNN so the recommendation responds "
+            "continuously to every input. Validate against local soil tests."
         ),
     }
-    return metrics
 
 
 if __name__ == "__main__":
