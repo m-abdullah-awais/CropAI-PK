@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="200" viewBox="0 0 720 200" role="img" aria-label="CropAI PK">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c5233" />
+      <stop offset="1" stop-color="#2f7a4a" />
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.04" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="200" rx="28" fill="url(#bg)" />
+
+  <!-- leaf tile -->
+  <rect x="40" y="40" width="120" height="120" rx="26" fill="url(#sheen)" />
+  <g transform="translate(58.6 58.6) scale(3.6)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+  </g>
+
+  <!-- wordmark -->
+  <text x="196" y="98" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#ffffff">CropAI<tspan fill="#8ff0b4"> PK</tspan></text>
+
+  <!-- tagline -->
+  <text x="198" y="132" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#d9efe1">Smarter crop decisions for Pakistan, built on real data</text>
+
+  <!-- three tool dots: recommend / yield / rotation -->
+  <g transform="translate(200 152)">
+    <circle cx="0" cy="0" r="6" fill="#6ee7a8" />
+    <circle cx="22" cy="0" r="6" fill="#5ee6d0" />
+    <circle cx="44" cy="0" r="6" fill="#f6b45a" />
+    <text x="60" y="5" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#bfe3cd">recommend  .  yield  .  rotation</text>
+  </g>
+</svg>

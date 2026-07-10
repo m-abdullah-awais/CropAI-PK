@@ -1,119 +1,157 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="CropAI PK" width="560" />
+</p>
+
 # CropAI PK
 
-AI-powered **crop recommendation**, **yield prediction**, and **crop rotation planning**
-for Pakistani agriculture - built entirely on real, public agricultural data, with a
-clean multilingual interface (English, Urdu, Hindi).
+A web app that helps with three everyday farming decisions in Pakistan:
 
-**Author:** Muhammad Abdullah Awais - [abdullahawais.com](https://abdullahawais.com)
+1. **Which crop should I plant?** (crop recommendation)
+2. **How much will it yield?** (yield prediction)
+3. **What should I plant next?** (rotation planning)
+
+You fill in a short form, and a machine learning model gives you a clear answer in seconds.
+The whole interface works in **English**, **Urdu** (right to left), and **Hindi**, with a
+light and dark theme. Everything is built on **real, public agricultural data**. No
+synthetic or made-up rows anywhere.
 
 ---
 
-## Features
+## What it does
 
-- **Crop Recommendation** - enter soil nutrients (N, P, K, pH) and a location; live
-  weather auto-fills temperature, humidity, and rainfall, and a scaled K-Nearest-Neighbours
-  model ranks the best crops for your field by confidence (21 crops).
-- **Yield Prediction** - real **FAOSTAT** yield for **31 crops** (1961-2024). A per-crop
-  trend model forecasts forward: recorded value for past years, trend-based forecast for
-  future years. Every recommended crop can be forecast (recommend -> predict yield).
-- **Rotation Planning** - pick a crop to see what to plant next season and what to avoid,
-  based on agronomic rules (botanical family, nitrogen role, cropping systems).
-- **Multilingual** - full UI in **English**, **Urdu** (right-to-left), and **Hindi**,
-  including translated crop names. Language is remembered across visits.
-- **Light / dark mode**, responsive, accessible, and mobile-friendly.
+### 1. Crop recommendation
+Enter your soil nutrients (N, P, K, pH) and a location. The app auto-fills the current
+temperature, humidity, and recent rainfall from a live weather API, then a scaled
+**K-Nearest-Neighbours** classifier ranks the best crops for your field, each with a
+confidence score. Covers **21 crops**.
+
+### 2. Yield prediction
+Pick a crop and a year. You get the expected yield (tonnes per hectare) from real Pakistan
+harvest records (**1961 to 2024**), plus a history chart. Past years return the recorded
+value; future years return a per-crop **trend forecast**, clearly labelled as an estimate.
+Covers **31 crops**, including every crop the recommender can suggest.
+
+### 3. Rotation planning
+Pick the crop you just grew, and the app ranks the best crops to plant next (and the ones
+to avoid). This is **not a static lookup**. It takes your soil, projects it forward using
+the current crop's real nutrient effect (a legume leaves nitrogen behind, a cereal depletes
+it), scores every candidate against that projected soil, and blends in agronomy rules
+(never repeat the same plant family, favour a legume after a heavy feeder). You can enter
+your own soil-test numbers for a personalised result, or leave them blank and let the app
+estimate from typical conditions. Covers the same **21 crops**.
+
+The three tools connect: from a recommended crop you can jump to its yield, and from there
+to a rotation plan.
+
+---
 
 ## Tech stack
 
-| Layer | Tech |
-|---|---|
+| Layer    | Tech |
+|----------|------|
 | Frontend | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Recharts |
-| Backend | FastAPI, scikit-learn, pandas |
-| ML | Scaled KNN classifier (recommendation); per-crop linear trend forecaster (yield) |
-| Weather | Open-Meteo (free, no API key) |
-| i18n | Custom React context (en / ur / hi) with RTL support |
+| Backend  | FastAPI, scikit-learn, pandas |
+| ML       | Scaled KNN classifier (recommendation), per-crop linear trend forecaster (yield), projected-soil + KNN + agronomy blend (rotation) |
+| Weather  | Open-Meteo (free, no API key) |
+| i18n     | Custom React context (en / ur / hi) with RTL support |
 
-The browser talks only to Next.js; ML calls are proxied server-side to FastAPI, and
-weather is proxied through a Next.js route handler.
+---
 
-## Data (real only)
+## How it works
 
-No synthetic, generated, or projected rows - every dataset is real.
+The app is two services plus a shared data folder, run together with one command:
 
-- **Recommendation** - `data/pakistan_crop_recommendation.csv`: the canonical
-  crop-recommendation dataset, **21 crops** (coffee removed - not grown in Pakistan;
-  N, P, K, temperature, humidity, pH, rainfall).
-- **Yield** - `data/pakistan_yield_real.csv`: real yields for **31 crops**, 1961-2024
-  (`crop, year, yield_t_ha`), covering all 21 recommendation crops.
-- **Rotation** - `data/pakistan_crop_rotation_rules.csv`: curated agronomic rules
-  (established facts; there is no ML dataset for rotation).
+- **`frontend/`** - the Next.js app you interact with in the browser.
+- **`backend/`** - a FastAPI service that loads the trained models and serves predictions.
+- **`data/`** - the real datasets the models are trained on.
 
-See `data/README.md` for per-crop provenance.
+The browser only ever talks to Next.js. Requests to the models are proxied server-side
+through Next.js route handlers (`frontend/app/api/ml/*`) to FastAPI, which keeps the backend
+URL hidden and avoids CORS. Weather is proxied the same way.
 
-## Data sources & resources
+Request flow:
 
-Every number in the app comes from one of these public resources.
+```
+Browser form  ->  Next.js API route (proxy)  ->  FastAPI endpoint  ->  model  ->  JSON back to the UI
+```
 
-### Crop recommendation dataset (soil NPK + climate -> crop)
-- **Crop Recommendation Dataset** (Atharva Ingle, augmented from Indian Chamber of Food
-  and Agriculture rainfall/climate/fertilizer records) - the canonical public soil-NPK
-  dataset. Kaggle: https://www.kaggle.com/datasets/atharvaingle/crop-recommendation-dataset
-- GitHub raw mirror actually downloaded:
+A quick look at the models:
+
+- **Recommendation** - a `StandardScaler` + distance-weighted `KNeighborsClassifier` over
+  7 soil and climate features. KNN (rather than a random forest) so the recommendation
+  responds smoothly as you change any input.
+- **Yield** - a per-crop linear trend fit over the recent years of real data. A real year
+  returns the recorded value; a future year is forecast from the trend and flagged.
+- **Rotation** - reuses the recommendation model. It projects your soil forward by the
+  current crop's nutrient effect, scores each crop by how well it matches that projected
+  soil, then applies agronomy rules (exclude same family and known-bad pairs, boost a
+  nitrogen-fixing legume after a heavy feeder).
+
+---
+
+## Where the data comes from
+
+Every figure is real and public. Nothing is fabricated. See `data/README.md` for a
+crop-by-crop provenance note.
+
+**Crop and soil records (recommendation)**
+- Crop Recommendation Dataset (Atharva Ingle), the standard public soil-NPK + climate ->
+  crop dataset: https://www.kaggle.com/datasets/atharvaingle/crop-recommendation-dataset
+- Exact copy downloaded:
   https://raw.githubusercontent.com/gireesh777/Crop_Recommendation_System_using_ML/master/Dataset/Crop_recommendation.csv
-- Hugging Face mirror (Parquet): https://huggingface.co/datasets/randalakab/Crop-recommendation
 
-### Yield data (crop, year -> yield)
-- **FAOSTAT - Production: Crops and livestock products** (primary source, all crops):
-  https://www.fao.org/faostat/en/#data/QCL
-  - No-auth bulk file used:
-    https://bulks-faostat.fao.org/production/Production_Crops_Livestock_E_All_Data_(Normalized).zip
-  - Bulk dataset index: https://bulks-faostat.fao.org/production/datasets_E.xml
-- **Our World in Data - Crop yields** (FAO-derived, used for cross-checking and the
-  earlier per-crop pulls): https://ourworldindata.org/crop-yields
-  (per-crop CSVs e.g. https://ourworldindata.org/grapher/wheat-yields )
-- **mungbean / blackgram / mothbeans**: FAOSTAT reports these together as
-  "Other pulses n.e.c." for Pakistan. Cross-checked against "Trend Analysis of Mungbean
-  Area and Yield in Pakistan":
+**Harvest yields (yield prediction)**
+- FAOSTAT, FAO's official crop statistics: https://www.fao.org/faostat/en/#data/QCL
+  (public no-auth bulk download used)
+- Our World in Data crop yields (FAO-derived cross-check): https://ourworldindata.org/crop-yields
+- mungbean / blackgram / mothbeans use FAOSTAT's combined "other pulses" series for
+  Pakistan, cross-checked against published research:
   https://www.researchgate.net/publication/309547815
-- **pomegranate** national yield (57.8 kt on 14.9 kha = 3.88 t/ha), AgriHunt
-  "Pomegranate: an emerging industry of Pakistan":
+- pomegranate uses a documented national figure (AgriHunt):
   https://agrihunt.com/articles/horti-industry/pomegranate-as-an-emerging-industry-of-pakistan/
-- Pakistan official district-wise crop data (reference, PDF-only): Ministry of National
-  Food Security & Research - https://mnfsr.gov.pk/ and Pakistan Bureau of Statistics -
-  https://www.pbs.gov.pk/
+- Government references: Ministry of National Food Security and Research
+  (https://mnfsr.gov.pk/), Pakistan Bureau of Statistics (https://www.pbs.gov.pk/)
 
-### Weather
-- **Open-Meteo** (free, keyless):
-  - Geocoding API: https://open-meteo.com/en/docs/geocoding-api
-  - Forecast API: https://open-meteo.com/en/docs
+**Weather**
+- Open-Meteo (free, keyless): https://open-meteo.com/
 
-### Rotation agronomy (facts behind the rules table)
-- FAO - "Fertilizer use by crop in Pakistan": https://www.fao.org/4/y5460e/y5460e08.htm
-- Pakistan Agricultural Research Council (PARC): https://www.parc.gov.pk/
-- Ayub Agricultural Research Institute (AARI), Punjab: https://aari.punjab.gov.pk/
+**Rotation agronomy (facts behind the rules)**
+- FAO "Fertilizer use by crop in Pakistan": https://www.fao.org/4/y5460e/y5460e08.htm
+- Pakistan Agricultural Research Council: https://www.parc.gov.pk/
+- Ayub Agricultural Research Institute, Punjab: https://aari.punjab.gov.pk/
+
+A note on scope: the crop-and-soil dataset is the best public one of its kind, but it was
+collected across South Asia rather than only in Pakistan, so recommendations are a strong
+starting point rather than the final word. The yields are Pakistan's own official numbers.
+
+---
 
 ## Getting started
 
 ### Prerequisites
 
-- **Node.js** 18+ and **pnpm**
-- **Python 3.11+** (a real interpreter, not the Windows Store stub)
+- **Node.js** 18+ and **pnpm** (`npm install -g pnpm`)
+- **Python** 3.11+ (a real interpreter, not the Windows Store stub)
 
 ### Install
 
 ```bash
-# Frontend + root tooling
+# clone, then from the repo root:
 pnpm install
 pnpm -C frontend install
 
-# Backend (Windows PowerShell)
+# backend (Windows PowerShell)
 py -3.14 -m venv backend/.venv
 backend/.venv/Scripts/python.exe -m pip install -r backend/requirements.txt
 ```
 
 ### Train the models
 
+Reads the real data and writes the model artifacts the API loads at startup.
+
 ```bash
-backend/.venv/Scripts/python.exe -m training.eval_report   # run from backend/
+# run from the backend/ folder
+backend/.venv/Scripts/python.exe -m training.eval_report
 ```
 
 ### Run everything (one command)
@@ -123,35 +161,53 @@ pnpm dev
 ```
 
 - Frontend: http://localhost:4319
-- Backend API + docs: http://localhost:9271/docs
+- Backend API + interactive docs: http://localhost:9271/docs
+
+Stop it with `Ctrl + C`.
+
+### Handy scripts
+
+| Command | What it does |
+|---------|--------------|
+| `pnpm dev` | Runs the frontend and backend together |
+| `pnpm train` | Retrains all models and refreshes `models/metrics.json` |
+| `pnpm -C frontend lint` | Lints the frontend |
+| `backend/.venv/Scripts/python.exe -m pytest` | Runs the backend tests (from `backend/`) |
+
+---
 
 ## Project structure
 
 ```
-frontend/   Next.js app (UI, i18n, API proxy routes)
-backend/    FastAPI + scikit-learn (models, training, endpoints, tests)
-data/       real datasets + data/README.md (per-crop provenance)
+frontend/   Next.js app: UI, i18n, and the API proxy routes
+backend/    FastAPI + scikit-learn: models, training, endpoints, tests
+data/       the real datasets, plus data/README.md (per-crop provenance)
 ```
-
-## Honesty notes
-
-- Recommendation accuracy is high because the real dataset's classes are well separated;
-  validate against local soil tests before field use.
-- Every one of the 21 recommendation crops has real yield data, so recommend -> predict
-  yield always works. **Coffee** was dropped from recommendations because it is not grown
-  commercially in Pakistan (no real yield exists) - rather than invent a number.
-- mungbean/blackgram/mothbeans use FAOSTAT's real "Other pulses" series (Pakistan does
-  not publish machine-readable per-crop pulse yields); pomegranate uses one documented
-  national figure (flat trend). Nothing is fabricated.
-- Future-year yields are **trend forecasts** (model inference from past real data),
-  clearly flagged in the UI - not recorded data.
-- Rainfall auto-filled from the weather API is recent precipitation, not the seasonal
-  total the model expects; it is pre-filled but editable and flagged.
-
-## License
-
-For research and educational use.
 
 ---
 
-Built by **Muhammad Abdullah Awais** - [www.abdullahawais.com](https://www.abdullahawais.com)
+## Honest notes
+
+- Recommendation accuracy is high because the dataset's classes are well separated. Still,
+  validate against local soil tests before acting on a suggestion.
+- Future-year yields are trend forecasts (inference from past real data), always flagged as
+  estimates in the UI, never presented as recorded data.
+- Coffee is intentionally excluded from recommendations: it is not grown commercially in
+  Pakistan and has no real yield, so inventing a number was not an option.
+- Rainfall auto-filled from the weather API is recent precipitation, not the seasonal total
+  the model expects. It is pre-filled but editable and flagged.
+
+---
+
+## About the author
+
+**Muhammad Abdullah Awais**
+Full Stack Developer
+
+[![Website](https://img.shields.io/badge/Website-abdullahawais.com-2f7a4a?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.abdullahawais.com)
+[![Email](https://img.shields.io/badge/Email-contact@abdullahawais.com-c14438?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact@abdullahawais.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-m--abdullah--awais-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/m-abdullah-awais-programmer)
+[![GitHub](https://img.shields.io/badge/GitHub-m--abdullah--awais-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/m-abdullah-awais)
+
+Built for research and educational use. If this helped you or you have ideas to improve it,
+feel free to reach out.
