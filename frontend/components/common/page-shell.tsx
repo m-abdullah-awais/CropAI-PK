@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 
-// Shared page container so all three tools share one width and rhythm.
+// Shared page container so all three tools share the panel's width and rhythm
+// (matches the dashboard's max-w-7xl content column).
 export function PageShell({
   children,
   className,
@@ -9,7 +10,7 @@ export function PageShell({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-6xl px-4 py-10 sm:py-12", className)}>
+    <div className={cn("mx-auto w-full max-w-7xl px-4 py-8 sm:px-6", className)}>
       {children}
     </div>
   );

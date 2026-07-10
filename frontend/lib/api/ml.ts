@@ -2,6 +2,7 @@
 import { apiFetch } from "@/lib/api/client";
 import type {
   HealthResponse,
+  MetricsResponse,
   RecommendResponse,
   RotationResponse,
   WeatherResponse,
@@ -27,6 +28,10 @@ export interface YieldInput {
 
 export function getHealth(): Promise<HealthResponse> {
   return apiFetch<HealthResponse>("/api/ml/health");
+}
+
+export function getMetrics(): Promise<MetricsResponse> {
+  return apiFetch<MetricsResponse>("/api/ml/metrics");
 }
 
 export function recommend(input: RecommendInput): Promise<RecommendResponse> {

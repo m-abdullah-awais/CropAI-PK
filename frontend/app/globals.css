@@ -64,6 +64,13 @@
   --success: hsl(142 46% 34%);
   --warning: hsl(36 84% 44%);
   --info: hsl(174 46% 34%);
+
+  /* Sidebar rail: a quiet, faintly-green surface set off from --background so the
+     panel reads as distinct chrome. --sidebar-active is the selected-item fill. */
+  --sidebar: hsl(96 24% 96%);
+  --sidebar-foreground: hsl(140 12% 30%);
+  --sidebar-active: hsl(95 34% 89%);
+  --sidebar-border: hsl(105 14% 88%);
 }
 
 .dark {
@@ -119,6 +126,11 @@
   --success: hsl(142 50% 50%);
   --warning: hsl(38 82% 56%);
   --info: hsl(174 50% 52%);
+
+  --sidebar: hsl(150 16% 9%);
+  --sidebar-foreground: hsl(110 8% 66%);
+  --sidebar-active: hsl(150 14% 15%);
+  --sidebar-border: hsl(150 9% 16%);
 }
 
 @theme inline {
@@ -166,6 +178,11 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-info: var(--info);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-border: var(--sidebar-border);
 
   --shadow-e1: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06);
   --shadow-e2:

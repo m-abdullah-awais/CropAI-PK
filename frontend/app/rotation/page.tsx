@@ -23,8 +23,7 @@ import { useT } from "@/lib/i18n/provider";
 
 function IdentitySkeleton() {
   return (
-    <Card className="overflow-hidden">
-      <span aria-hidden className="block h-1.5 bg-muted" />
+    <Card>
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center gap-3">
           <Skeleton className="size-11 shrink-0 rounded-xl" />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, LineChart, RefreshCw, Trophy } from "lucide-react";
+import { ArrowRight, LineChart, RefreshCw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -22,59 +22,57 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
   return (
     <Stagger className="space-y-4">
       <StaggerItem>
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {t.recommend.topCrops}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {t.recommend.topCrops}
+          </p>
+          <span className="text-xs text-muted-foreground">
+            {data.recommendations.length}
+          </span>
+        </div>
       </StaggerItem>
+
       {data.recommendations.map((r, i) => {
         const best = i === 0;
         return (
           <StaggerItem key={r.crop}>
             <Card
               className={cn(
-                "overflow-hidden",
-                best &&
-                  "border-tool-recommend/40 shadow-e2 ring-1 ring-tool-recommend/20",
+                best && "border-tool-recommend/30 bg-tool-recommend/3",
               )}
             >
               <CardContent className="p-5">
-                <div className="flex items-start gap-3">
-                  <span
-                    className={cn(
-                      "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-semibold tabular-nums",
-                      best
-                        ? "bg-tool-recommend text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground",
-                    )}
-                  >
+                <div className="flex items-center gap-4">
+                  <span className="w-4 shrink-0 text-center font-mono text-sm font-semibold tabular-nums text-muted-foreground">
                     {i + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-lg font-semibold">
-                        {tCrop(r.crop, r.display)}
-                      </span>
-                      <Badge variant={CONF_VARIANT[r.confidence]}>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="truncate text-base font-semibold">
+                          {tCrop(r.crop, r.display)}
+                        </span>
+                        {best && (
+                          <span className="shrink-0 rounded-full bg-tool-recommend/10 px-2 py-0.5 text-[11px] font-medium text-tool-recommend">
+                            {t.recommend.bestMatch}
+                          </span>
+                        )}
+                      </div>
+                      <Badge variant={CONF_VARIANT[r.confidence]} className="shrink-0">
                         {t.recommend.confidence[r.confidence]}
                       </Badge>
                     </div>
-                    {best && (
-                      <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-tool-recommend">
-                        <Trophy className="size-3.5" /> {t.recommend.bestMatch}
-                      </span>
-                    )}
+                    <div className="mt-2.5">
+                      <ConfidenceBar
+                        value={r.probability}
+                        tone={r.confidence}
+                        emphasis={best}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-3">
-                  <ConfidenceBar
-                    value={r.probability}
-                    tone={r.confidence}
-                    emphasis={best}
-                  />
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2 ps-8">
                   <Link
                     href={`/rotation?crop=${r.crop}`}
                     className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
@@ -84,9 +82,7 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
                   {r.yield_available ? (
                     <Link
                       href={`/yield?crop=${r.crop}`}
-                      className={cn(
-                        buttonVariants({ variant: "outline", size: "sm" }),
-                      )}
+                      className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
                     >
                       <LineChart /> {t.recommend.predictYield}
                     </Link>
@@ -101,10 +97,11 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
           </StaggerItem>
         );
       })}
+
       <StaggerItem>
         <Link
           href="/rotation"
-          className="inline-flex items-center gap-1 text-sm font-medium text-tool-recommend"
+          className="inline-flex items-center gap-1 text-sm font-medium text-tool-recommend hover:underline"
         >
           {t.recommend.exploreRotation}{" "}
           <ArrowRight className="size-4 rtl:rotate-180" />

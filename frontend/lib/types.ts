@@ -8,6 +8,25 @@ export interface HealthResponse {
   n_crops_yield: number;
 }
 
+// Real training metrics from models/metrics.json (only the fields the dashboard reads;
+// the file also carries per-class F1 and a confusion matrix we do not surface here).
+export interface MetricsResponse {
+  recommendation?: {
+    model?: string;
+    accuracy?: number;
+    macro_f1?: number;
+    top3_accuracy?: number;
+    n_train?: number;
+    n_test?: number;
+  } | null;
+  yield?: {
+    model?: string;
+    n_crops?: number;
+    backtest_horizon_years?: number;
+    forecast_mae_t_ha?: number;
+  } | null;
+}
+
 export interface CropRecommendation {
   crop: string;
   display: string;

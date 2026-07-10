@@ -11,8 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { LanguageProvider } from "@/lib/i18n/provider";
 import { UIProviders } from "@/components/layout/ui-providers";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import { AppShell } from "@/components/layout/app-shell";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -52,9 +51,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LanguageProvider>
             <UIProviders>
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <AppShell>{children}</AppShell>
               <Toaster richColors position="top-center" />
             </UIProviders>
           </LanguageProvider>

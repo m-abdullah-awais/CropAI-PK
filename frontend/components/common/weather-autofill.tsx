@@ -42,7 +42,7 @@ export function WeatherAutofill({
   }
 
   return (
-    <div className="rounded-lg border border-tool-recommend/20 bg-tool-recommend/6 p-4">
+    <div className="rounded-lg border border-hairline bg-muted/40 p-4">
       <div className="flex items-center justify-between gap-2">
         <Label htmlFor="location" className="flex items-center gap-1.5">
           <MapPin className="size-4 text-tool-recommend" /> {t.recommend.location}

@@ -1,6 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SoilHorizon } from "@/components/common/soil-horizon";
 
 type Accent = "recommend" | "yield" | "rotation";
 
@@ -10,6 +9,8 @@ const CHIP: Record<Accent, string> = {
   rotation: "bg-tool-rotation/10 text-tool-rotation",
 };
 
+// Compact page heading. The panel top bar already carries the short route title, so this
+// stays quiet: a small accent icon, the title, and a one-line description. No hero chrome.
 export function PageHeader({
   title,
   description,
@@ -22,28 +23,27 @@ export function PageHeader({
   accent?: Accent;
 }) {
   return (
-    <div className="mb-8">
-      <SoilHorizon variant="rule" accent={accent} className="mb-5 w-24" />
-      <div className="flex items-center gap-3">
-        {Icon && (
-          <span
-            className={cn(
-              "flex size-11 items-center justify-center rounded-xl",
-              accent ? CHIP[accent] : "bg-primary/10 text-primary",
-            )}
-          >
-            <Icon className="size-5" />
-          </span>
-        )}
-        <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+    <div className="mb-6 flex items-start gap-3">
+      {Icon && (
+        <span
+          className={cn(
+            "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-lg",
+            accent ? CHIP[accent] : "bg-secondary text-muted-foreground",
+          )}
+        >
+          <Icon className="size-5" />
+        </span>
+      )}
+      <div className="min-w-0">
+        <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-[1.7rem]">
           {title}
         </h1>
+        {description && (
+          <p className="mt-1 max-w-2xl text-pretty text-sm text-muted-foreground">
+            {description}
+          </p>
+        )}
       </div>
-      {description && (
-        <p className="mt-3 max-w-2xl text-pretty text-muted-foreground">
-          {description}
-        </p>
-      )}
     </div>
   );
 }

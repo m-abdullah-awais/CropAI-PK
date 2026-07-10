@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   AlertTriangle,
+  RefreshCw,
   Sprout,
   TrendingUp,
   TrendingDown,
@@ -57,83 +58,82 @@ export function YieldResult({ data }: { data: YieldResponse }) {
 
   return (
     <MountReveal>
-      <Card className="overflow-hidden">
-        <span aria-hidden className="block h-1 bg-tool-yield" />
-      <CardContent className="p-6">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <TrendingUp className="size-4 text-tool-yield" />
-          {t.yield.yieldFor} {display} ({data.year})
-          <Badge variant={data.is_forecast ? "warning" : "success"}>
-            {data.is_forecast ? t.yield.forecast : t.yield.recorded}
-          </Badge>
-        </div>
-
-        <Tabs defaultValue="tha" className="mt-3">
-          <TabsList className="h-8">
-            <TabsTrigger value="tha">t/ha</TabsTrigger>
-            <TabsTrigger value="kgha">kg/ha</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tha" className="mt-2">
-            <div className="flex items-baseline gap-2">
-              <AnimatedNumber
-                value={tVal}
-                decimals={tDec}
-                className="font-mono text-4xl font-semibold tabular-nums tracking-tight"
-              />
-              <span className="text-lg text-muted-foreground">t/ha</span>
-            </div>
-          </TabsContent>
-          <TabsContent value="kgha" className="mt-2">
-            <div className="flex items-baseline gap-2">
-              <AnimatedNumber
-                value={data.yield_kg_per_ha ?? 0}
-                decimals={0}
-                className="font-mono text-4xl font-semibold tabular-nums tracking-tight"
-              />
-              <span className="text-lg text-muted-foreground">kg/ha</span>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {data.trend_direction && (
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-secondary/60 px-2.5 py-1.5 text-xs">
-            {data.trend_direction === "rising" ? (
-              <TrendingUp className="size-3.5 text-tool-yield" />
-            ) : data.trend_direction === "falling" ? (
-              <TrendingDown className="size-3.5 text-destructive" />
-            ) : (
-              <Minus className="size-3.5 text-muted-foreground" />
-            )}
-            <span className="font-medium">{t.yield.trendLabel}:</span>
-            <span className="text-muted-foreground">
-              {t.yield[data.trend_direction]}{" "}
-              <span className="font-mono tabular-nums">
-                {Math.abs(data.trend_per_year ?? 0)}
-              </span>{" "}
-              {t.yield.perYear}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {t.yield.yieldFor} {display} ({data.year})
             </span>
+            <Badge variant={data.is_forecast ? "warning" : "success"}>
+              {data.is_forecast ? t.yield.forecast : t.yield.recorded}
+            </Badge>
           </div>
-        )}
 
-        {data.extrapolation_warning && (
-          <Alert variant="warning" className="mt-4">
-            <AlertTriangle />
-            <AlertDescription>{data.extrapolation_warning}</AlertDescription>
-          </Alert>
-        )}
+          <Tabs defaultValue="tha" className="mt-4">
+            <TabsList className="h-8">
+              <TabsTrigger value="tha">t/ha</TabsTrigger>
+              <TabsTrigger value="kgha">kg/ha</TabsTrigger>
+            </TabsList>
+            <TabsContent value="tha" className="mt-3">
+              <div className="flex items-baseline gap-2">
+                <AnimatedNumber
+                  value={tVal}
+                  decimals={tDec}
+                  className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-foreground"
+                />
+                <span className="text-lg text-muted-foreground">t/ha</span>
+              </div>
+            </TabsContent>
+            <TabsContent value="kgha" className="mt-3">
+              <div className="flex items-baseline gap-2">
+                <AnimatedNumber
+                  value={data.yield_kg_per_ha ?? 0}
+                  decimals={0}
+                  className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-foreground"
+                />
+                <span className="text-lg text-muted-foreground">kg/ha</span>
+              </div>
+            </TabsContent>
+          </Tabs>
 
-        {canRotate && (
-          <Link
-            href={`/rotation?crop=${data.crop}`}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "mt-4",
-            )}
-          >
-            {t.yield.planRotation} {display}
-          </Link>
-        )}
-      </CardContent>
+          {data.trend_direction && (
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-hairline px-2.5 py-1.5 text-xs">
+              {data.trend_direction === "rising" ? (
+                <TrendingUp className="size-3.5 text-tool-yield" />
+              ) : data.trend_direction === "falling" ? (
+                <TrendingDown className="size-3.5 text-destructive" />
+              ) : (
+                <Minus className="size-3.5 text-muted-foreground" />
+              )}
+              <span className="font-medium">{t.yield.trendLabel}:</span>
+              <span className="text-muted-foreground">
+                {t.yield[data.trend_direction]}{" "}
+                <span className="font-mono tabular-nums">
+                  {Math.abs(data.trend_per_year ?? 0)}
+                </span>{" "}
+                {t.yield.perYear}
+              </span>
+            </div>
+          )}
+
+          {data.extrapolation_warning && (
+            <Alert variant="warning" className="mt-4">
+              <AlertTriangle />
+              <AlertDescription>{data.extrapolation_warning}</AlertDescription>
+            </Alert>
+          )}
+
+          {canRotate && (
+            <div className="mt-5 border-t border-hairline pt-4">
+              <Link
+                href={`/rotation?crop=${data.crop}`}
+                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+              >
+                <RefreshCw /> {t.yield.planRotation} {display}
+              </Link>
+            </div>
+          )}
+        </CardContent>
       </Card>
     </MountReveal>
   );

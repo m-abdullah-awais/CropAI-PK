@@ -28,10 +28,9 @@ function YieldSkeleton() {
   return (
     <div className="space-y-6">
       <Card>
-        <span aria-hidden className="block h-1 bg-muted" />
         <CardContent className="space-y-3 p-6">
           <Skeleton className="h-4 w-48" />
-          <Skeleton className="h-11 w-40" />
+          <Skeleton className="h-14 w-44" />
           <Skeleton className="h-7 w-56" />
         </CardContent>
       </Card>

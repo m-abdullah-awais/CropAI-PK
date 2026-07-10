@@ -7,16 +7,18 @@ export function RecommendSkeleton() {
       <Skeleton className="h-3 w-40" />
       {[0, 1, 2].map((i) => (
         <Card key={i}>
-          <CardContent className="space-y-3 p-5">
-            <div className="flex items-start gap-3">
-              <Skeleton className="size-7 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-32" />
-                <Skeleton className="h-3 w-20" />
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4 shrink-0" />
+              <div className="flex-1 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-5 w-28" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
               </div>
             </div>
-            <Skeleton className="h-2.5 w-full" />
-            <div className="flex gap-2">
+            <div className="mt-4 flex gap-2 ps-8">
               <Skeleton className="h-9 w-28" />
               <Skeleton className="h-9 w-28" />
             </div>
