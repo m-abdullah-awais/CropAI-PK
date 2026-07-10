@@ -49,11 +49,48 @@ Columns: `N, P, K, temperature(C), humidity(%), ph, rainfall(mm), label`.
 
 ## 3. pakistan_crop_rotation_rules.csv - rotation (rules)
 
-Curated agronomic rules for the **same 22 crops**. Columns: `crop, family,
+Curated agronomic rules for the **same 21 crops**. Columns: `crop, family,
 season(Kharif/Rabi/perennial), nitrogen_role, recommended_next(;-sep),
 avoid_next(;-sep), notes`. This is established agronomy (botanical families,
 nitrogen fixing, perennial handling), not fabricated measurements - there is no
 public ML dataset for crop rotation. Perennials have no annual successor (see notes).
+
+---
+
+## Data sources & links (every resource used)
+
+### Crop recommendation dataset (soil NPK + climate -> crop)
+- Crop Recommendation Dataset (Atharva Ingle / Indian Chamber of Food and Agriculture),
+  Kaggle: https://www.kaggle.com/datasets/atharvaingle/crop-recommendation-dataset
+- GitHub raw mirror actually downloaded:
+  https://raw.githubusercontent.com/gireesh777/Crop_Recommendation_System_using_ML/master/Dataset/Crop_recommendation.csv
+- Hugging Face mirror (Parquet): https://huggingface.co/datasets/randalakab/Crop-recommendation
+
+### Yield data (crop, year -> yield)
+- FAOSTAT - Production: Crops and livestock products (primary source, all crops):
+  https://www.fao.org/faostat/en/#data/QCL
+  - No-auth bulk file used:
+    https://bulks-faostat.fao.org/production/Production_Crops_Livestock_E_All_Data_(Normalized).zip
+  - Bulk dataset index: https://bulks-faostat.fao.org/production/datasets_E.xml
+- Our World in Data - Crop yields (FAO-derived; cross-checking + earlier per-crop pulls):
+  https://ourworldindata.org/crop-yields  (per-crop e.g. https://ourworldindata.org/grapher/wheat-yields )
+- mungbean / blackgram / mothbeans -> FAOSTAT "Other pulses n.e.c." for Pakistan;
+  cross-checked against "Trend Analysis of Mungbean Area and Yield in Pakistan":
+  https://www.researchgate.net/publication/309547815
+- pomegranate national figure (57.8 kt on 14.9 kha = 3.88 t/ha), AgriHunt:
+  https://agrihunt.com/articles/horti-industry/pomegranate-as-an-emerging-industry-of-pakistan/
+- Pakistan official district-wise crop data (reference, PDF-only): Ministry of National
+  Food Security & Research https://mnfsr.gov.pk/ ; Pakistan Bureau of Statistics
+  https://www.pbs.gov.pk/
+
+### Weather
+- Open-Meteo (free, keyless): geocoding https://open-meteo.com/en/docs/geocoding-api ;
+  forecast https://open-meteo.com/en/docs
+
+### Rotation agronomy (facts behind the rules table)
+- FAO "Fertilizer use by crop in Pakistan": https://www.fao.org/4/y5460e/y5460e08.htm
+- Pakistan Agricultural Research Council (PARC): https://www.parc.gov.pk/
+- Ayub Agricultural Research Institute (AARI), Punjab: https://aari.punjab.gov.pk/
 
 ---
 
@@ -63,3 +100,5 @@ public ML dataset for crop rotation. Perennials have no annual successor (see no
   requirement-ranges recipe, and the yield-projection script were removed.
 - Recommendation accuracy is high because the real dataset's classes are
   well separated; still validate against local soil tests before field use.
+- The root `README.md` is the single source of truth for the whole project; this file
+  documents the datasets specifically.
