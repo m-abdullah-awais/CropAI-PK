@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import { Leaf, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,22 @@ function Brand() {
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
   const t = useT();
+
+  React.useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setScrolled(window.scrollY > 8));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   const links = [
     { href: "/", label: t.nav.dashboard },
@@ -48,7 +64,14 @@ export function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-40 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
+        scrolled
+          ? "border-b border-border/70 bg-background/70 shadow-e1 backdrop-blur-lg"
+          : "border-b border-transparent bg-background/0",
+      )}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Brand />
 
@@ -62,13 +85,19 @@ export function Navbar() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  "after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:rounded-full after:bg-primary after:transition-transform after:duration-200 after:content-[''] motion-reduce:after:transition-none",
                   active
-                    ? "text-foreground after:scale-x-100"
-                    : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-50",
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {l.label}
+                {active && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute inset-x-3 bottom-1 h-0.5 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
             );
           })}
@@ -87,7 +116,7 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72 p-0">
-              <SheetHeader className="border-b">
+              <SheetHeader className="border-b border-hairline">
                 <SheetTitle className="text-start">
                   <Brand />
                 </SheetTitle>

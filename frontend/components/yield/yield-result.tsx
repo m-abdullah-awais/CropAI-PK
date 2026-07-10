@@ -14,8 +14,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { formatNumber } from "@/lib/units";
 import { displayName, getCrop } from "@/lib/crops";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MountReveal } from "@/components/motion/reveal";
 import type { YieldResponse } from "@/lib/types";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -51,10 +52,13 @@ export function YieldResult({ data }: { data: YieldResponse }) {
   }
 
   const canRotate = getCrop(data.crop)?.rotationAvailable;
+  const tVal = data.yield_t_per_ha ?? 0;
+  const tDec = Math.min(3, (String(tVal).split(".")[1] ?? "").length);
 
   return (
-    <Card className="animate-fade-in-up overflow-hidden">
-      <span aria-hidden className="block h-1 bg-tool-yield" />
+    <MountReveal>
+      <Card className="overflow-hidden">
+        <span aria-hidden className="block h-1 bg-tool-yield" />
       <CardContent className="p-6">
         <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           <TrendingUp className="size-4 text-tool-yield" />
@@ -71,17 +75,21 @@ export function YieldResult({ data }: { data: YieldResponse }) {
           </TabsList>
           <TabsContent value="tha" className="mt-2">
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-4xl font-semibold tabular-nums tracking-tight">
-                {data.yield_t_per_ha}
-              </span>
+              <AnimatedNumber
+                value={tVal}
+                decimals={tDec}
+                className="font-mono text-4xl font-semibold tabular-nums tracking-tight"
+              />
               <span className="text-lg text-muted-foreground">t/ha</span>
             </div>
           </TabsContent>
           <TabsContent value="kgha" className="mt-2">
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-4xl font-semibold tabular-nums tracking-tight">
-                {formatNumber(data.yield_kg_per_ha ?? 0)}
-              </span>
+              <AnimatedNumber
+                value={data.yield_kg_per_ha ?? 0}
+                decimals={0}
+                className="font-mono text-4xl font-semibold tabular-nums tracking-tight"
+              />
               <span className="text-lg text-muted-foreground">kg/ha</span>
             </div>
           </TabsContent>
@@ -126,6 +134,7 @@ export function YieldResult({ data }: { data: YieldResponse }) {
           </Link>
         )}
       </CardContent>
-    </Card>
+      </Card>
+    </MountReveal>
   );
 }

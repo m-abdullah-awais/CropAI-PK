@@ -12,9 +12,9 @@ const badgeVariants = cva(
         accent:
           "border-transparent bg-amber-500/15 text-amber-700 dark:text-amber-300",
         outline: "text-foreground",
-        success: "border-transparent bg-primary/15 text-primary",
-        warning:
-          "border-transparent bg-amber-500/20 text-amber-800 dark:text-amber-300",
+        success: "border-transparent bg-success/12 text-success",
+        warning: "border-transparent bg-warning/15 text-warning",
+        info: "border-transparent bg-info/12 text-info",
         destructive:
           "border-transparent bg-destructive/12 text-destructive",
       },

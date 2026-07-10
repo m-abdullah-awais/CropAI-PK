@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SoilHorizon } from "@/components/common/soil-horizon";
+import { MountReveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import type { RotationResponse } from "@/lib/types";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -48,9 +49,10 @@ export function RotationIdentity({ data }: { data: RotationResponse }) {
   const SeasonIcon = SEASON_ICON[data.season] ?? CalendarDays;
 
   return (
-    <Card className="animate-fade-in-up overflow-hidden">
-      <SoilHorizon variant="rule" accent="rotation" className="h-1.5 rounded-none" />
-      <CardContent className="p-6">
+    <MountReveal>
+      <Card className="overflow-hidden">
+        <SoilHorizon variant="rule" accent="rotation" className="h-1.5 rounded-none" />
+        <CardContent className="p-6">
         <div className="flex items-center gap-3">
           <span className="flex size-11 items-center justify-center rounded-xl bg-tool-rotation/10 text-tool-rotation">
             <Sprout className="size-5" />
@@ -85,17 +87,19 @@ export function RotationIdentity({ data }: { data: RotationResponse }) {
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
           {data.notes}
         </p>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </MountReveal>
   );
 }
 
 export function RotationFlow({ data }: { data: RotationResponse }) {
   const { t, tCrop } = useI18n();
   return (
-    <div className="animate-fade-in-up space-y-5">
-      <Card className="overflow-hidden">
-        <span aria-hidden className="block h-1 bg-tool-rotation" />
+    <Stagger className="space-y-5">
+      <StaggerItem>
+        <Card className="overflow-hidden">
+          <span aria-hidden className="block h-1 bg-tool-rotation" />
         <CardContent className="p-5">
           <p className="flex items-center gap-2 font-medium text-tool-rotation">
             <CheckCircle2 className="size-4" /> {t.rotation.recommended}
@@ -124,11 +128,13 @@ export function RotationFlow({ data }: { data: RotationResponse }) {
               </p>
             )}
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </StaggerItem>
 
-      <Card>
-        <CardContent className="p-5">
+      <StaggerItem>
+        <Card>
+          <CardContent className="p-5">
           <p className="flex items-center gap-2 font-medium text-destructive">
             <Ban className="size-4" /> {t.rotation.avoid}
           </p>
@@ -148,8 +154,9 @@ export function RotationFlow({ data }: { data: RotationResponse }) {
               </p>
             )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </StaggerItem>
+    </Stagger>
   );
 }

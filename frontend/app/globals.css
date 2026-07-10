@@ -7,7 +7,7 @@
 :root {
   --radius: 0.75rem;
 
-  --background: hsl(45 33% 98%);
+  --background: hsl(46 22% 98%);
   --foreground: hsl(140 18% 12%);
 
   --card: hsl(0 0% 100%);
@@ -54,6 +54,16 @@
 
   /* Green-black shadow tint feeding the elevation system. */
   --shadow-color: 140 24% 12%;
+
+  /* Layered surfaces for premium depth. */
+  --elevated: hsl(0 0% 100%);
+  --sunken: hsl(46 20% 96%);
+  --hairline: hsl(105 12% 90%);
+
+  /* Semantic status colors (dark-mode-safe; used as text or /10 fills). */
+  --success: hsl(142 46% 34%);
+  --warning: hsl(36 84% 44%);
+  --info: hsl(174 46% 34%);
 }
 
 .dark {
@@ -101,6 +111,14 @@
   --earth-line: hsl(142 48% 50%);
 
   --shadow-color: 150 60% 2%;
+
+  --elevated: hsl(150 15% 12%);
+  --sunken: hsl(150 14% 8%);
+  --hairline: hsl(150 8% 17%);
+
+  --success: hsl(142 50% 50%);
+  --warning: hsl(38 82% 56%);
+  --info: hsl(174 50% 52%);
 }
 
 @theme inline {
@@ -142,6 +160,13 @@
   --color-earth-3: var(--earth-3);
   --color-earth-line: var(--earth-line);
 
+  --color-elevated: var(--elevated);
+  --color-sunken: var(--sunken);
+  --color-hairline: var(--hairline);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
   --shadow-e1: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06);
   --shadow-e2:
     0 2px 6px -1px hsl(var(--shadow-color) / 0.08),
@@ -177,6 +202,17 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up { animation: none; }
+}
+
+/* Fluid display sizing for the hero headline (premium type scale). */
+.text-hero {
+  font-size: clamp(2.5rem, 1.1rem + 4.6vw, 4.5rem);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: hsl(142 44% 30% / 0.16);
 }
 
 /* Script-specific fonts by active language (set on <html lang>). Display headings

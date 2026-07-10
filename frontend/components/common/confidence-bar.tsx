@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 type Tone = "high" | "medium" | "low";
@@ -9,6 +12,7 @@ const FILL: Record<Tone, string> = {
 };
 
 // Accessible horizontal bar with a visible numeric percentage (not color-only).
+// The fill grows in on mount; reduced motion (via MotionConfig) jumps to final.
 export function ConfidenceBar({
   value,
   tone = "high",
@@ -28,13 +32,11 @@ export function ConfidenceBar({
         aria-valuemin={0}
         aria-valuemax={100}
       >
-        <div
-          className={cn(
-            "h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
-            FILL[tone],
-            !emphasis && "opacity-70",
-          )}
-          style={{ width: `${pct}%` }}
+        <motion.div
+          className={cn("h-full rounded-full", FILL[tone], !emphasis && "opacity-70")}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
       <span className="w-10 text-right font-mono text-sm font-semibold tabular-nums">
