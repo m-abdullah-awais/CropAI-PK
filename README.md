@@ -26,6 +26,22 @@ synthetic or made-up rows anywhere.
 
 ---
 
+## Screenshots
+
+A responsive dashboard interface with a full dark theme and three languages
+(English, Urdu with right-to-left layout, and Hindi).
+
+|  |  |
+| :---: | :---: |
+| **Dashboard** | **Crop recommendation** |
+| ![Dashboard](assets/screenshots/dashboard.png) | ![Crop recommendation](assets/screenshots/recommend.png) |
+| **Yield prediction** | **Rotation planning** |
+| ![Yield prediction](assets/screenshots/yield.png) | ![Rotation planning](assets/screenshots/rotation.png) |
+| **Dark mode** | **Urdu (right to left)** |
+| ![Dark mode](assets/screenshots/dark-mode.png) | ![Urdu right to left](assets/screenshots/urdu-rtl.png) |
+
+---
+
 ## What it does
 
 ### 1. Crop recommendation
