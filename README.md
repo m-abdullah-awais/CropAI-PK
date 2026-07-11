@@ -2,6 +2,15 @@
   <img src="assets/logo.svg" alt="CropAI PK" width="560" />
 </p>
 
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img alt="scikit-learn" src="https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+</p>
+
 # CropAI PK
 
 A web app that helps with three everyday farming decisions in Pakistan:
@@ -201,13 +210,9 @@ data/       the real datasets, plus data/README.md (per-crop provenance)
 
 ## About the author
 
-**Muhammad Abdullah Awais**
-Full Stack Developer
+**Muhammad Abdullah Awais** - Full Stack Developer
 
-[![Website](https://img.shields.io/badge/Website-abdullahawais.com-2f7a4a?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.abdullahawais.com)
-[![Email](https://img.shields.io/badge/Email-contact@abdullahawais.com-c14438?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact@abdullahawais.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-m--abdullah--awais-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/m-abdullah-awais-programmer)
-[![GitHub](https://img.shields.io/badge/GitHub-m--abdullah--awais-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/m-abdullah-awais)
+[![Website](https://img.shields.io/badge/Website-2F7A4A?style=flat-square&logo=googlechrome&logoColor=white)](https://www.abdullahawais.com) [![Email](https://img.shields.io/badge/Email-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:contact@abdullahawais.com) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/m-abdullah-awais-programmer) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/m-abdullah-awais)
 
 Built for research and educational use. If this helped you or you have ideas to improve it,
 feel free to reach out.
