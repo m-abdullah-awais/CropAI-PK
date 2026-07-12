@@ -155,20 +155,31 @@ starting point rather than the final word. The yields are Pakistan's own officia
 
 ### Prerequisites
 
-- **Node.js** 18+ and **pnpm** (`npm install -g pnpm`)
+- **Node.js** 18+ (ships with npm; pnpm is installed locally in this project, not globally)
 - **Python** 3.11+ (a real interpreter, not the Windows Store stub)
 
 ### Install
 
+This project uses **pnpm**, installed **locally inside the project folder** (no global
+`-g` install). Bootstrap it once with npm, then run every pnpm command through `npx`.
+
 ```bash
 # clone, then from the repo root:
-pnpm install
-pnpm -C frontend install
+
+# 1) install pnpm into this project only (added to devDependencies, not globally)
+npm install pnpm --save-dev
+
+# 2) use the local pnpm (via npx) to install the app dependencies
+npx pnpm install
+npx pnpm -C frontend install
 
 # backend (Windows PowerShell)
 py -3.14 -m venv backend/.venv
 backend/.venv/Scripts/python.exe -m pip install -r backend/requirements.txt
 ```
+
+Every `pnpm ...` command below is run through the local copy as `npx pnpm ...`. If you
+prefer to type `pnpm` directly, add `./node_modules/.bin` to your PATH.
 
 ### Train the models
 
@@ -182,7 +193,7 @@ backend/.venv/Scripts/python.exe -m training.eval_report
 ### Run everything (one command)
 
 ```bash
-pnpm dev
+npx pnpm dev
 ```
 
 - Frontend: http://localhost:4319
@@ -194,9 +205,9 @@ Stop it with `Ctrl + C`.
 
 | Command | What it does |
 |---------|--------------|
-| `pnpm dev` | Runs the frontend and backend together |
-| `pnpm train` | Retrains all models and refreshes `models/metrics.json` |
-| `pnpm -C frontend lint` | Lints the frontend |
+| `npx pnpm dev` | Runs the frontend and backend together |
+| `npx pnpm train` | Retrains all models and refreshes `models/metrics.json` |
+| `npx pnpm -C frontend lint` | Lints the frontend |
 | `backend/.venv/Scripts/python.exe -m pytest` | Runs the backend tests (from `backend/`) |
 
 ---
