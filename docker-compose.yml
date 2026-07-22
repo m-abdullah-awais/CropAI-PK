@@ -1,0 +1,53 @@
+# CropAI PK production stack: caddy (edge, :80/:443) -> frontend (Next.js)
+# -> backend (FastAPI). Only caddy publishes host ports; the browser talks to
+# Next.js only, and ML calls stay on the internal network via the server-side
+# /api/ml/* proxy.
+#
+# Run:    docker compose up -d --build
+# Logs:   docker compose logs -f
+# Stop:   docker compose down
+services:
+  backend:
+    build:
+      # Repo-root context: the image needs backend/ AND the committed data/ CSVs
+      # (models are trained during the build).
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    # No published ports - internal network only. Healthcheck is defined in the
+    # Dockerfile (/health via python stdlib).
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    environment:
+      # Server-side proxy target for /api/ml/* route handlers.
+      API_URL: http://backend:9271
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4319/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+
+volumes:
+  caddy_data:
+  caddy_config:

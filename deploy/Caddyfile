@@ -1,0 +1,10 @@
+# CropAI PK edge proxy.
+#
+# HTTPS flip (when you have a domain): replace ":80" below with the domain,
+# e.g. "cropai.example.com" - then run: docker compose up -d --force-recreate caddy
+# Caddy provisions and renews Let's Encrypt certificates automatically;
+# port 443 is already published and cert state persists in the caddy_data volume.
+:80 {
+	encode zstd gzip
+	reverse_proxy frontend:4319
+}

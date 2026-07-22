@@ -1,0 +1,29 @@
+# Applies to builds whose context is the repo root (the backend image).
+# The backend build only needs backend/ + data/ - exclude everything heavy.
+.git
+.gitignore
+node_modules
+frontend
+deploy
+scripts
+temp
+docs
+*.md
+
+# Local artifacts that must never leak into images
+backend/.venv
+backend/models
+backend/tests
+backend/.env
+**/__pycache__
+**/*.pyc
+.env
+.env.*
+
+# Root tooling irrelevant to the image
+docker-compose.yml
+dev.ps1
+package.json
+pnpm-lock.yaml
+.npmrc
+.dockerignore

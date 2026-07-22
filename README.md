@@ -210,6 +210,18 @@ Stop it with `Ctrl + C`.
 | `npx pnpm -C frontend lint` | Lints the frontend |
 | `backend/.venv/Scripts/python.exe -m pytest` | Runs the backend tests (from `backend/`) |
 
+### Deploy with Docker
+
+The whole stack (Caddy edge proxy, Next.js frontend, FastAPI backend with models
+trained during the image build) runs with one command:
+
+```bash
+docker compose up -d --build
+```
+
+Then open http://localhost. See [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for the
+full DigitalOcean Droplet runbook (firewall, updates, enabling HTTPS).
+
 ---
 
 ## Project structure

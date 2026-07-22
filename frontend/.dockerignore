@@ -1,0 +1,17 @@
+# Keep the frontend build context small and deterministic.
+node_modules
+.next
+out
+build
+coverage
+*.tsbuildinfo
+
+# Never bake env files into the image - API_URL comes from compose at runtime.
+.env
+.env.*
+
+# Not needed for the build
+Dockerfile
+.dockerignore
+*.md
+.gitignore
