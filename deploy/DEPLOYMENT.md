@@ -60,6 +60,21 @@ build fails - a broken model can never reach production.
 4. (Optional, later) A domain name if you want https://yourdomain.com
    instead of an IP address.
 
+### How to run the commands in this guide
+
+Paste ONE gray code box at a time - the whole box at once - press Enter,
+let it finish, and check the output for errors before moving to the next
+box. Why:
+
+- Pasting a whole box is safe: the terminal runs its commands in order,
+  exactly as if you typed them one by one.
+- Never split lines WITHIN a box: a line ending in `\` continues on the
+  next line - it is one command shown across several lines for
+  readability. Pasting half of it runs a broken fragment.
+- Box-by-box (not the whole guide at once) means that if something fails,
+  you catch it at the step where it happened instead of untangling a
+  cascade of follow-on errors afterwards.
+
 ---
 
 ## Part 1 - Create the Droplet (the server)
@@ -218,28 +233,67 @@ Two easy options:
 
 ### What about the .env files?
 
-You do NOT need to create any .env file on the server. The .env files you
-use on your PC (`frontend/.env.local`, `backend/.env`) are for local
-development only - they are git-ignored, so the clone does not even bring
-them, and nothing on the server misses them. Here is why:
+You do NOT need to create any .env file on the server. The .env files on
+your PC (`frontend/.env.local`, `backend/.env`) are for local development
+only - they are git-ignored, so the clone does not even bring them, and
+nothing on the server misses them. Step by step, here is what replaces
+each one in production:
 
-- The only setting production needs is the backend's address, and
-  `docker-compose.yml` already provides it to the frontend container
-  (`API_URL=http://backend:9271` - the backend's name on the private Docker
-  network). Your local value (`127.0.0.1:9271`) would be wrong inside a
-  container anyway, which is why the Dockerfiles deliberately exclude .env
-  files from the images.
-- Every backend default (port, data and model paths) is already correct for
-  the container layout. CORS origins do not matter in production because the
-  browser never talks to the backend directly.
-- The app has no secrets: the weather API (Open-Meteo) is free and keyless,
-  and there is no database.
+1. `frontend/.env.local` sets `API_URL=http://127.0.0.1:9271` on your PC.
+   In production, `docker-compose.yml` already sets
+   `API_URL=http://backend:9271` on the frontend container - `backend` is
+   the backend's name on the private Docker network. Your local value would
+   be wrong inside a container anyway, which is why the Dockerfiles
+   deliberately exclude .env files from the images. Nothing to do.
+2. `backend/.env` can override port, CORS origins, and data/model paths.
+   Every default is already correct for the container layout, and CORS does
+   not matter in production because the browser never talks to the backend
+   directly. Nothing to do.
+3. Secrets: the app has none. The weather API (Open-Meteo) is free and
+   keyless, and there is no database. Nothing to hide, nothing to do.
 
-If you ever DO add a secret later (say, a paid API key): create a file
-called `.env` next to `docker-compose.yml` ON the server (never commit it),
-put `MY_KEY=value` in it, and reference it from `docker-compose.yml` with
-`MY_KEY: ${MY_KEY}` under the service's `environment:` block. Compose reads
-that `.env` file automatically.
+If you ever DO add a secret later (say, a paid API key), follow these steps
+ON the server:
+
+1. Go to the project folder:
+
+   ```bash
+   cd cropai
+   ```
+
+2. Create a file named exactly `.env` next to `docker-compose.yml`:
+
+   ```bash
+   nano .env
+   ```
+
+   Why this name and place: compose automatically reads a `.env` file that
+   sits in the same folder as `docker-compose.yml` - no extra config.
+
+3. Put the secret in it, one per line, then save (Ctrl+O, Enter, Ctrl+X):
+
+   ```
+   MY_API_KEY=abc123
+   ```
+
+4. Reference it in `docker-compose.yml` under the service that needs it:
+
+   ```yaml
+   environment:
+     MY_API_KEY: ${MY_API_KEY}
+   ```
+
+   Why the `${...}` form: compose substitutes the value from `.env` at
+   start time, so the secret lives only on the server, never in git.
+
+5. Apply the change (only affected containers are recreated):
+
+   ```bash
+   docker compose up -d
+   ```
+
+6. Never commit the `.env` file. The repo's `.gitignore` already blocks it,
+   so `git pull` updates will not touch it either.
 
 ---
 
