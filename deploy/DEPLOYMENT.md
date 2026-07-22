@@ -216,6 +216,31 @@ Two easy options:
   -> Personal access tokens, scope `repo`) and clone with:
   `git clone https://<TOKEN>@github.com/<user>/<repo>.git cropai`
 
+### What about the .env files?
+
+You do NOT need to create any .env file on the server. The .env files you
+use on your PC (`frontend/.env.local`, `backend/.env`) are for local
+development only - they are git-ignored, so the clone does not even bring
+them, and nothing on the server misses them. Here is why:
+
+- The only setting production needs is the backend's address, and
+  `docker-compose.yml` already provides it to the frontend container
+  (`API_URL=http://backend:9271` - the backend's name on the private Docker
+  network). Your local value (`127.0.0.1:9271`) would be wrong inside a
+  container anyway, which is why the Dockerfiles deliberately exclude .env
+  files from the images.
+- Every backend default (port, data and model paths) is already correct for
+  the container layout. CORS origins do not matter in production because the
+  browser never talks to the backend directly.
+- The app has no secrets: the weather API (Open-Meteo) is free and keyless,
+  and there is no database.
+
+If you ever DO add a secret later (say, a paid API key): create a file
+called `.env` next to `docker-compose.yml` ON the server (never commit it),
+put `MY_KEY=value` in it, and reference it from `docker-compose.yml` with
+`MY_KEY: ${MY_KEY}` under the service's `environment:` block. Compose reads
+that `.env` file automatically.
+
 ---
 
 ## Part 6 - First deploy
