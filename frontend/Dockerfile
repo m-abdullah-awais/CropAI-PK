@@ -9,6 +9,9 @@ RUN npm install -g pnpm@11.8.0
 # pnpm-workspace.yaml pins ignoredBuiltDependencies - copy it so install
 # behaves exactly like local dev.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Slow-network tolerance (written as .npmrc because pnpm reads that).
+RUN printf 'fetch-timeout=1200000\nfetch-retries=5\nfetch-retry-maxtimeout=120000\n' > .npmrc
+# Cache the store so a retried build resumes instead of starting over.
 RUN --mount=type=cache,target=/root/.pnpm-store \
     pnpm install --frozen-lockfile --store-dir /root/.pnpm-store
 
