@@ -219,17 +219,14 @@ to build the images. We pull it from GitHub rather than uploading from your
 PC, because then updating later is just `git pull`.
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git cropai
-cd cropai
+git clone https://github.com/m-abdullah-awais/CropAI-PK.git
+cd CropAI-PK
 ```
 
-If the repository is **private**, GitHub will refuse the anonymous clone.
-Two easy options:
-
-- Make the repo public (fine for this project), or
-- Create a Personal Access Token on GitHub (Settings -> Developer settings
-  -> Personal access tokens, scope `repo`) and clone with:
-  `git clone https://<TOKEN>@github.com/<user>/<repo>.git cropai`
+If the repository is ever made **private**, GitHub will refuse the anonymous
+clone. In that case create a Personal Access Token on GitHub (Settings ->
+Developer settings -> Personal access tokens, scope `repo`) and clone with:
+`git clone https://<TOKEN>@github.com/m-abdullah-awais/CropAI-PK.git`
 
 ### What about the .env files?
 
@@ -258,7 +255,7 @@ ON the server:
 1. Go to the project folder:
 
    ```bash
-   cd cropai
+   cd CropAI-PK
    ```
 
 2. Create a file named exactly `.env` next to `docker-compose.yml`:
@@ -358,7 +355,7 @@ Whenever you have pushed new code to GitHub:
 
 ```bash
 ssh root@YOUR_DROPLET_IP
-cd cropai
+cd CropAI-PK
 git pull                          # fetch the new code
 docker compose up -d --build      # rebuild changed images, restart changed services
 docker image prune -f             # delete old, now-unused image layers

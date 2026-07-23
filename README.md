@@ -165,6 +165,8 @@ This project uses **pnpm**, installed **locally inside the project folder** (no 
 
 ```bash
 # clone, then from the repo root:
+git clone https://github.com/m-abdullah-awais/CropAI-PK.git
+cd CropAI-PK
 
 # 1) install pnpm into this project only (added to devDependencies, not globally)
 npm install pnpm --save-dev

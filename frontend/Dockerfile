@@ -12,8 +12,12 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Slow-network tolerance (written as .npmrc because pnpm reads that).
 RUN printf 'fetch-timeout=1200000\nfetch-retries=5\nfetch-retry-maxtimeout=120000\n' > .npmrc
 # Cache the store so a retried build resumes instead of starting over.
+# --ignore-scripts: the only deps with build scripts (sharp, unrs-resolver)
+# are intentionally skipped in local dev too (see pnpm-workspace.yaml);
+# without the flag pnpm 11 treats the skip as a hard error in fresh envs.
 RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile --store-dir /root/.pnpm-store
+    pnpm install --frozen-lockfile --store-dir /root/.pnpm-store \
+    --ignore-scripts
 
 # ---- build: compile the standalone production server ----
 FROM node:22-alpine AS build
