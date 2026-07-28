@@ -112,6 +112,19 @@ A quick look at the models:
   soil, then applies agronomy rules (exclude same family and known-bad pairs, boost a
   nitrogen-fixing legume after a heavy feeder).
 
+**Models and datasets at a glance** (3 tools, but only 2 trained models - rotation reuses
+the first model and adds rules):
+
+| Tool | Model | Datasets used | Rule-based? |
+|------|-------|---------------|-------------|
+| Recommendation | Scaled KNN classifier | 1 (`pakistan_crop_recommendation.csv`) | No (pure ML) |
+| Yield | Per-crop linear trend forecast | 1 (`pakistan_yield_real.csv`) | No |
+| Rotation | Reuses the recommendation KNN | 3 (`pakistan_crop_recommendation.csv` + `pakistan_crop_nutrient_effects.csv` + `pakistan_crop_rotation_rules.csv`) | Yes (KNN score + agronomy rules) |
+
+So: **4 datasets** in total, **2 trained model files** (`recommendation.joblib`,
+`yield.joblib`), and rule-based logic appears **only in rotation** (the KNN score blended
+with agronomy rules). Recommendation is pure ML; yield is a statistical trend forecast.
+
 ---
 
 ## Where the data comes from
@@ -251,9 +264,24 @@ data/       the real datasets, plus data/README.md (per-crop provenance)
 
 ## About the author
 
-**Muhammad Abdullah Awais** - Full Stack Developer
+<p align="center">
+  <strong>Muhammad Abdullah Awais</strong><br />
+  Full Stack Developer &nbsp;|&nbsp; Building AI-powered web applications
+</p>
 
-[![Website](https://img.shields.io/badge/Website-2F7A4A?style=flat-square&logo=googlechrome&logoColor=white)](https://www.abdullahawais.com) [![Email](https://img.shields.io/badge/Email-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:contact@abdullahawais.com) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/m-abdullah-awais-programmer) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/m-abdullah-awais)
+<p align="center">
+  <a href="https://www.abdullahawais.com"><img src="https://img.shields.io/badge/Website-05A081?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Website" /></a>
+  <a href="https://github.com/m-abdullah-awais"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
+  <a href="https://www.linkedin.com/in/m-abdullah-awais-programmer"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
+  <a href="https://www.youtube.com/@m_abdullah_awais"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube" /></a>
+  <a href="https://www.instagram.com/m_abdullah_awais"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" /></a>
+  <a href="mailto:contact@abdullahawais.com"><img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" /></a>
+</p>
 
-Built for research and educational use. If this helped you or you have ideas to improve it,
-feel free to reach out.
+<p align="center">
+  <em>Built for research and educational use. If this project helped you, or you have ideas to make it better, I would love to connect.</em>
+</p>
+
+<p align="center">
+  <sub>If you find this project useful, consider giving it a star.</sub>
+</p>
