@@ -51,10 +51,20 @@ temperature, humidity, and recent rainfall from a live weather API, then a scale
 confidence score. Covers **21 crops**.
 
 ### 2. Yield prediction
-Pick a crop and a year. You get the expected yield (tonnes per hectare) from real Pakistan
-harvest records (**1961 to 2024**), plus a history chart. Past years return the recorded
-value; future years return a per-crop **trend forecast**, clearly labelled as an estimate.
-Covers **31 crops**, including every crop the recommender can suggest.
+Pick a crop and enter your field's soil nutrients (N, P, K, pH) and weather. The app
+estimates the yield for **your** conditions and draws a **what-if curve**: as you raise or
+lower a nutrient, you watch the yield climb to its plateau and see exactly where your field
+sits relative to the crop's optimum, so you can decide how to manage fertiliser. It also
+names the single **most-limiting factor** ("nitrogen is the main limit - raising it
+increases yield"). Below the estimate, a chart shows the crop's real Pakistan harvest
+history (**1961 to 2024**).
+
+This is an agronomic **estimate**, not a measured prediction: no real dataset links exact
+soil nutrients to yield, so the tool scales the crop's real attainable yield by how well
+your field matches its ideal conditions, using established response curves (see below). It
+is clearly labelled to validate against a local soil test. The nutrient estimate covers the
+**21 crops** the recommender can suggest; the 10 yield-only crops (wheat, sugarcane,
+potato, ...) have no soil-nutrient data, so they show their real history only.
 
 ### 3. Rotation planning
 Pick the crop you just grew, and the app ranks the best crops to plant next (and the ones
@@ -76,7 +86,7 @@ to a rotation plan.
 |----------|------|
 | Frontend | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Recharts |
 | Backend  | FastAPI, scikit-learn, pandas |
-| ML       | Scaled KNN classifier (recommendation), per-crop linear trend forecaster (yield), projected-soil + KNN + agronomy blend (rotation) |
+| ML       | Scaled KNN classifier (recommendation), agronomy response model over real yields (yield), projected-soil + KNN + agronomy blend (rotation) |
 | Weather  | Open-Meteo (free, no API key) |
 | i18n     | Custom React context (en / ur / hi) with RTL support |
 
@@ -105,25 +115,32 @@ A quick look at the models:
 - **Recommendation** - a `StandardScaler` + distance-weighted `KNeighborsClassifier` over
   7 soil and climate features. KNN (rather than a random forest) so the recommendation
   responds smoothly as you change any input.
-- **Yield** - a per-crop linear trend fit over the recent years of real data. A real year
-  returns the recorded value; a future year is forecast from the trend and flagged.
+- **Yield** - an agronomy response model. It takes the crop's real recent Pakistan yield
+  (its *attainable* yield) and scales it by how well your soil and climate match the crop's
+  real optimum, using established response shapes: diminishing returns for nutrients (more
+  helps until it plateaus) and a tolerance band for pH and climate (too low or too high both
+  hurt). It reports the most-limiting factor and a yield-vs-nutrient curve. The crop's real
+  yield history (with a per-crop trend line) is shown alongside as context.
 - **Rotation** - reuses the recommendation model. It projects your soil forward by the
   current crop's nutrient effect, scores each crop by how well it matches that projected
   soil, then applies agronomy rules (exclude same family and known-bad pairs, boost a
   nitrogen-fixing legume after a heavy feeder).
 
-**Models and datasets at a glance** (3 tools, but only 2 trained models - rotation reuses
-the first model and adds rules):
+**Models and datasets at a glance** (3 tools, 2 trained ML models - the recommendation
+classifier and a per-crop yield trend - with the yield estimate and rotation both layering
+real-data agronomy on top):
 
 | Tool | Model | Datasets used | Rule-based? |
 |------|-------|---------------|-------------|
 | Recommendation | Scaled KNN classifier | 1 (`pakistan_crop_recommendation.csv`) | No (pure ML) |
-| Yield | Per-crop linear trend forecast | 1 (`pakistan_yield_real.csv`) | No |
+| Yield | Agronomy response model over real yields | 2 (`pakistan_yield_real.csv` for the attainable yield and history + `pakistan_crop_recommendation.csv` for each crop's optimum) | Yes (agronomic response curves) |
 | Rotation | Reuses the recommendation KNN | 3 (`pakistan_crop_recommendation.csv` + `pakistan_crop_nutrient_effects.csv` + `pakistan_crop_rotation_rules.csv`) | Yes (KNN score + agronomy rules) |
 
-So: **4 datasets** in total, **2 trained model files** (`recommendation.joblib`,
-`yield.joblib`), and rule-based logic appears **only in rotation** (the KNN score blended
-with agronomy rules). Recommendation is pure ML; yield is a statistical trend forecast.
+So: **4 datasets** in total, and agronomy logic (real data combined with established
+response principles) now backs **two of the three tools** - yield (a crop's real yield
+scaled by response curves) and rotation (a KNN score blended with agronomy rules).
+Recommendation stays pure ML. The yield tool also keeps a real-history trend chart
+alongside the estimate as context.
 
 ---
 
@@ -253,8 +270,12 @@ data/       the real datasets, plus data/README.md (per-crop provenance)
 
 - Recommendation accuracy is high because the dataset's classes are well separated. Still,
   validate against local soil tests before acting on a suggestion.
-- Future-year yields are trend forecasts (inference from past real data), always flagged as
-  estimates in the UI, never presented as recorded data.
+- The nutrient-based yield figure is an agronomic estimate: no real dataset links exact soil
+  nutrients to yield, so the tool scales a crop's real attainable yield by how well your
+  field matches its ideal conditions, using established response curves. It is always
+  labelled as an estimate to validate against a local soil test, never a measured value.
+- The real-history chart's future-year trend line is likewise inference from past real data,
+  clearly marked and never presented as a recorded figure.
 - Coffee is intentionally excluded from recommendations: it is not grown commercially in
   Pakistan and has no real yield, so inventing a number was not an option.
 - Rainfall auto-filled from the weather API is recent precipitation, not the seasonal total

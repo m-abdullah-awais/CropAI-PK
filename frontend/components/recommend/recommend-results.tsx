@@ -9,6 +9,7 @@ import { ConfidenceBar } from "@/components/common/confidence-bar";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
 import type { RecommendResponse } from "@/lib/types";
+import type { SoilValues } from "@/components/recommend/recommend-form";
 import { useI18n } from "@/lib/i18n/provider";
 
 const CONF_VARIANT = {
@@ -17,8 +18,23 @@ const CONF_VARIANT = {
   low: "secondary",
 } as const;
 
-export function RecommendResults({ data }: { data: RecommendResponse }) {
+export function RecommendResults({
+  data,
+  soil,
+}: {
+  data: RecommendResponse;
+  soil?: SoilValues | null;
+}) {
   const { t, tCrop } = useI18n();
+  // Carry the soil the farmer entered into the yield tool, so "Predict yield"
+  // estimates for their actual field, not defaults.
+  const yieldHref = (crop: string) => {
+    const params = new URLSearchParams({ crop });
+    if (soil) {
+      for (const [k, v] of Object.entries(soil)) params.set(k, String(v));
+    }
+    return `/yield?${params.toString()}`;
+  };
   return (
     <Stagger className="space-y-4">
       <StaggerItem>
@@ -81,7 +97,7 @@ export function RecommendResults({ data }: { data: RecommendResponse }) {
                   </Link>
                   {r.yield_available ? (
                     <Link
-                      href={`/yield?crop=${r.crop}`}
+                      href={yieldHref(r.crop)}
                       className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
                     >
                       <LineChart /> {t.recommend.predictYield}

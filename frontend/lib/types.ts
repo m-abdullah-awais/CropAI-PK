@@ -72,6 +72,45 @@ export interface YieldHistoryResponse {
   series: YieldHistoryPoint[];
 }
 
+// Nutrient/weather-based yield estimate (agronomy response model).
+export type YieldFactorName =
+  | "N" | "P" | "K" | "temperature" | "humidity" | "ph" | "rainfall";
+
+export interface YieldFactor {
+  name: YieldFactorName;
+  value: number;
+  optimum: number;
+  adequacy: number; // 0..1
+  status: "low" | "ideal" | "high";
+  limiting: boolean;
+}
+
+export interface YieldSensitivityPoint {
+  value: number;
+  yield_t_per_ha: number;
+}
+
+export interface YieldSensitivity {
+  feature: YieldFactorName;
+  points: YieldSensitivityPoint[];
+  optimum: number;
+  current: number;
+}
+
+export interface YieldEstimateResponse {
+  available: boolean;
+  crop: string;
+  display: string;
+  estimated_t_per_ha?: number | null;
+  estimated_kg_per_ha?: number | null;
+  attainable_t_per_ha?: number | null;
+  overall_adequacy?: number | null; // 0..1
+  factors?: YieldFactor[] | null;
+  most_limiting?: YieldFactorName | null;
+  sensitivities?: YieldSensitivity[] | null;
+  note?: string | null;
+}
+
 export interface ProjectedSoil {
   N: number;
   P: number;

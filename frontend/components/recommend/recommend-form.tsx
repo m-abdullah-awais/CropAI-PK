@@ -44,12 +44,16 @@ const DEFAULTS: Record<FieldName, string> = {
   temperature: "25", humidity: "70", rainfall: "120",
 };
 
+export type SoilValues = Record<FieldName, number>;
+
 export function RecommendForm({
   onResult,
   onLoadingChange,
+  onSoil,
 }: {
   onResult: (r: RecommendResponse | null) => void;
   onLoadingChange: (loading: boolean) => void;
+  onSoil?: (soil: SoilValues) => void;
 }) {
   const t = useT();
   const [values, setValues] = React.useState<Record<FieldName, string>>(DEFAULTS);
@@ -81,6 +85,7 @@ export function RecommendForm({
     setSubmitting(true);
     onLoadingChange(true);
     onResult(null);
+    onSoil?.(parsed.data as SoilValues);
     try {
       const res = await recommend({ ...parsed.data, top_n: 3 });
       onResult(res);

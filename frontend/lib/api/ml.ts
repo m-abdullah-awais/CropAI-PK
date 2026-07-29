@@ -6,6 +6,7 @@ import type {
   RecommendResponse,
   RotationResponse,
   WeatherResponse,
+  YieldEstimateResponse,
   YieldHistoryResponse,
   YieldResponse,
 } from "@/lib/types";
@@ -24,6 +25,17 @@ export interface RecommendInput {
 export interface YieldInput {
   crop: string;
   year: number;
+}
+
+export interface YieldEstimateInput {
+  crop: string;
+  N: number;
+  P: number;
+  K: number;
+  ph: number;
+  temperature: number;
+  humidity: number;
+  rainfall: number;
 }
 
 export interface RotationInput {
@@ -55,6 +67,15 @@ export function recommend(input: RecommendInput): Promise<RecommendResponse> {
 
 export function predictYield(input: YieldInput): Promise<YieldResponse> {
   return apiFetch<YieldResponse>("/api/ml/yield", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function estimateYield(
+  input: YieldEstimateInput,
+): Promise<YieldEstimateResponse> {
+  return apiFetch<YieldEstimateResponse>("/api/ml/yield-estimate", {
     method: "POST",
     body: JSON.stringify(input),
   });

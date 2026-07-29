@@ -39,3 +39,52 @@ class YieldHistoryResponse(BaseModel):
     crop: str
     display: str
     series: list[YieldHistoryPoint]
+
+
+# --- Nutrient/weather-based yield estimate (agronomy response model) ---
+
+class YieldEstimateRequest(BaseModel):
+    crop: str
+    N: float = Field(ge=0)
+    P: float = Field(ge=0)
+    K: float = Field(ge=0)
+    ph: float = Field(ge=0, le=14)
+    temperature: float
+    humidity: float = Field(ge=0, le=100)
+    rainfall: float = Field(ge=0)
+
+
+class YieldFactor(BaseModel):
+    name: str  # N | P | K | temperature | humidity | ph | rainfall
+    value: float
+    optimum: float
+    adequacy: float  # 0..1
+    status: str  # low | ideal | high
+    limiting: bool
+
+
+class YieldSensitivityPoint(BaseModel):
+    value: float
+    yield_t_per_ha: float
+
+
+class YieldSensitivity(BaseModel):
+    feature: str
+    points: list[YieldSensitivityPoint]
+    optimum: float
+    current: float
+
+
+class YieldEstimateResponse(BaseModel):
+    available: bool
+    crop: str
+    display: str
+    # Present when available:
+    estimated_t_per_ha: float | None = None
+    estimated_kg_per_ha: float | None = None
+    attainable_t_per_ha: float | None = None
+    overall_adequacy: float | None = None  # 0..1
+    factors: list[YieldFactor] | None = None
+    most_limiting: str | None = None
+    sensitivities: list[YieldSensitivity] | None = None
+    note: str | None = None  # estimate disclaimer, or the unavailable message

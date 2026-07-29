@@ -1,27 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import {
-  AlertTriangle,
-  RefreshCw,
-  Sprout,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-} from "lucide-react";
+import { Info, RefreshCw, Sprout } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { displayName, getCrop } from "@/lib/crops";
+import { formatNumber } from "@/lib/units";
+import { getCrop } from "@/lib/crops";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MountReveal } from "@/components/motion/reveal";
-import type { YieldResponse } from "@/lib/types";
+import type { YieldEstimateResponse, YieldFactor } from "@/lib/types";
 import { useI18n } from "@/lib/i18n/provider";
 
-export function YieldResult({ data }: { data: YieldResponse }) {
+export function YieldResult({
+  data,
+  loading = false,
+}: {
+  data: YieldEstimateResponse;
+  loading?: boolean;
+}) {
   const { t, tCrop } = useI18n();
   const display = tCrop(data.crop, data.display);
 
@@ -32,41 +31,34 @@ export function YieldResult({ data }: { data: YieldResponse }) {
           <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-muted-foreground">
             <Sprout className="size-6" />
           </span>
-          <p className="mt-4 font-medium">
-            {t.yield.unavailable} {display}
-          </p>
+          <p className="mt-4 font-medium">{display}</p>
           <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-            {data.message}
+            {t.yield.nutrientUnavailable}
           </p>
-          {data.yield_available_crops && (
-            <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-              {data.yield_available_crops.map((c) => (
-                <Badge key={c} variant="secondary">
-                  {tCrop(c, displayName(c))}
-                </Badge>
-              ))}
-            </div>
-          )}
         </CardContent>
       </Card>
     );
   }
 
+  const estT = data.estimated_t_per_ha ?? 0;
+  const estDec = Math.min(3, (String(estT).split(".")[1] ?? "").length);
+  const attainable = data.attainable_t_per_ha ?? 0;
+  const matchPct = Math.round((data.overall_adequacy ?? 0) * 100);
+  const factors = data.factors ?? [];
+  const limiting = factors.find((f) => f.limiting);
+  const goodMatch = (data.overall_adequacy ?? 0) >= 0.9;
   const canRotate = getCrop(data.crop)?.rotationAvailable;
-  const tVal = data.yield_t_per_ha ?? 0;
-  const tDec = Math.min(3, (String(tVal).split(".")[1] ?? "").length);
 
   return (
     <MountReveal>
-      <Card>
+      <Card className={cn(loading && "opacity-70 transition-opacity")}>
+        <span aria-hidden className="block h-1 bg-tool-yield" />
         <CardContent className="p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {t.yield.yieldFor} {display} ({data.year})
+              {t.yield.estimatedFor} {display}
             </span>
-            <Badge variant={data.is_forecast ? "warning" : "success"}>
-              {data.is_forecast ? t.yield.forecast : t.yield.recorded}
-            </Badge>
+            <Badge variant="info">{t.yield.estimateBadge}</Badge>
           </div>
 
           <Tabs defaultValue="tha" className="mt-4">
@@ -77,8 +69,8 @@ export function YieldResult({ data }: { data: YieldResponse }) {
             <TabsContent value="tha" className="mt-3">
               <div className="flex items-baseline gap-2">
                 <AnimatedNumber
-                  value={tVal}
-                  decimals={tDec}
+                  value={estT}
+                  decimals={estDec}
                   className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-foreground"
                 />
                 <span className="text-lg text-muted-foreground">t/ha</span>
@@ -87,7 +79,7 @@ export function YieldResult({ data }: { data: YieldResponse }) {
             <TabsContent value="kgha" className="mt-3">
               <div className="flex items-baseline gap-2">
                 <AnimatedNumber
-                  value={data.yield_kg_per_ha ?? 0}
+                  value={data.estimated_kg_per_ha ?? 0}
                   decimals={0}
                   className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-foreground"
                 />
@@ -96,35 +88,57 @@ export function YieldResult({ data }: { data: YieldResponse }) {
             </TabsContent>
           </Tabs>
 
-          {data.trend_direction && (
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-hairline px-2.5 py-1.5 text-xs">
-              {data.trend_direction === "rising" ? (
-                <TrendingUp className="size-3.5 text-tool-yield" />
-              ) : data.trend_direction === "falling" ? (
-                <TrendingDown className="size-3.5 text-destructive" />
-              ) : (
-                <Minus className="size-3.5 text-muted-foreground" />
-              )}
-              <span className="font-medium">{t.yield.trendLabel}:</span>
-              <span className="text-muted-foreground">
-                {t.yield[data.trend_direction]}{" "}
-                <span className="font-mono tabular-nums">
-                  {Math.abs(data.trend_per_year ?? 0)}
-                </span>{" "}
-                {t.yield.perYear}
-              </span>
-            </div>
-          )}
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <span>
+              {t.yield.attainable}:{" "}
+              <span className="font-mono tabular-nums text-foreground">
+                {formatNumber(attainable, 2)}
+              </span>{" "}
+              t/ha
+            </span>
+            <span>
+              {t.yield.soilMatch}:{" "}
+              <span className="font-mono tabular-nums text-foreground">{matchPct}%</span>
+            </span>
+          </div>
 
-          {data.extrapolation_warning && (
-            <Alert variant="warning" className="mt-4">
-              <AlertTriangle />
-              <AlertDescription>{data.extrapolation_warning}</AlertDescription>
-            </Alert>
-          )}
+          {/* Most-limiting guidance */}
+          <div className="mt-4 flex items-start gap-2 rounded-lg border border-tool-yield/25 bg-tool-yield/6 p-3 text-sm">
+            <Info className="mt-0.5 size-4 shrink-0 text-tool-yield" />
+            <p>
+              {goodMatch || !limiting ? (
+                t.yield.goodMatch
+              ) : (
+                <>
+                  <span className="font-medium">
+                    {t.recommend.fields[limiting.name]}
+                  </span>{" "}
+                  {limiting.status === "low"
+                    ? t.yield.limitLow
+                    : t.yield.limitHigh}
+                </>
+              )}
+            </p>
+          </div>
+
+          {/* Per-factor adequacy */}
+          <div className="mt-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {t.yield.factorsTitle}
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+              {factors.map((f) => (
+                <FactorRow key={f.name} factor={f} label={t.recommend.fields[f.name]} />
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-5 flex items-start gap-1.5 text-[11px] leading-relaxed text-muted-foreground">
+            <Info className="mt-0.5 size-3.5 shrink-0" /> {t.yield.estimateDisclaimer}
+          </p>
 
           {canRotate && (
-            <div className="mt-5 border-t border-hairline pt-4">
+            <div className="mt-4 border-t border-hairline pt-4">
               <Link
                 href={`/rotation?crop=${data.crop}`}
                 className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
@@ -136,5 +150,33 @@ export function YieldResult({ data }: { data: YieldResponse }) {
         </CardContent>
       </Card>
     </MountReveal>
+  );
+}
+
+function FactorRow({ factor, label }: { factor: YieldFactor; label: string }) {
+  const { t } = useI18n();
+  const pct = Math.round(factor.adequacy * 100);
+  const status = t.yield.status[factor.status];
+  const isIdeal = factor.status === "ideal";
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-2 text-[13px]">
+        <span className="truncate">{label}</span>
+        <span
+          className={cn(
+            "shrink-0 text-xs font-medium",
+            isIdeal ? "text-tool-yield" : "text-warning",
+          )}
+        >
+          {status}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className={cn("h-full rounded-full", isIdeal ? "bg-tool-yield" : "bg-warning")}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
   );
 }
